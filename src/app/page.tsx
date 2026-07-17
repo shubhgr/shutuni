@@ -133,7 +133,7 @@ export default function Home() {
       <section className="landing__community">
         <Image
           className="landing__community-top-paper"
-          src="/lpImage/figma/community-top-paper.png"
+          src="/lpImage/figma/community-dark-paper.png"
           alt=""
           width={1024}
           height={120}
