@@ -378,7 +378,7 @@
   z-index: 6;
   width: 38rem;
   height: auto;
-  transform: rotate(-12deg);
+  transform: scaleX(-1) rotate(-12deg);
   transform-origin: center;
 }
 
@@ -892,7 +892,7 @@
   box-sizing: border-box;
   display: grid;
   grid-template-rows:
-    15rem
+    13.5rem
     min(3.1944vw, 2.875rem)
     min(13.598vw, 12.238rem)
     min(2.7778vw, 2.5rem)
@@ -933,7 +933,7 @@
 .landing__voices-tear--top {
   grid-row: 1;
   align-self: stretch;
-  height: 15rem;
+  height: 13.5rem;
   transform: scaleX(-1);
 }
 
@@ -1015,7 +1015,8 @@
   z-index: 4;
   width: 1200px;
   max-width: none;
-  height: auto;
+  height: 31.25rem;
+  object-fit: fill;
   transform: translateX(-50%);
   pointer-events: none;
   user-select: none;
@@ -1429,6 +1430,8 @@
 
   .landing__voices-crowd {
     width: 170vw;
+    height: auto;
+    object-fit: contain;
   }
 
   .landing__voices-face {
@@ -1491,6 +1494,192 @@
     height: 8rem;
   }
 
+}
+
+/* Desktop rhythm — calmer scale and consistent section gutters */
+@media (min-width: 901px) {
+  .landing {
+    --landing-content-width: 70rem;
+    --landing-gutter: max(
+      6rem,
+      calc((100vw - var(--landing-content-width)) / 2)
+    );
+  }
+
+  .landing__hero {
+    height: 60rem;
+    min-height: 60rem;
+  }
+
+  .landing__hero-visual {
+    height: 29rem;
+    flex-basis: 29rem;
+  }
+
+  .landing__hero-collage {
+    width: 54rem;
+    height: 31rem;
+  }
+
+  .landing__hero-heading {
+    width: min(100%, var(--landing-content-width));
+    height: 9.5rem;
+    flex-basis: 9.5rem;
+  }
+
+  .landing__headline,
+  .landing__headline span {
+    font-size: 2.625rem;
+  }
+
+  .landing__hero-details {
+    width: min(100%, var(--landing-content-width));
+    max-width: var(--landing-content-width);
+    height: 11.5rem;
+    flex-basis: 11.5rem;
+    gap: 5.5rem;
+  }
+
+  .landing__hero-side {
+    width: 11.5rem;
+    height: 11.5rem;
+    flex-basis: 11.5rem;
+  }
+
+  .landing__hero-hat {
+    width: 16rem;
+    height: 15rem;
+  }
+
+  .landing__hero-hand {
+    width: 12rem;
+    height: 18rem;
+  }
+
+  .landing__purpose {
+    height: 60rem;
+    min-height: 60rem;
+    padding: 4.5rem var(--landing-gutter);
+  }
+
+  .landing__purpose-title,
+  .landing__community-title,
+  .landing__process > h2,
+  .landing__invite-warning h2 {
+    font-size: 3.5rem;
+  }
+
+  .landing__purpose-burst {
+    height: 46rem;
+    transform: scale(0.92);
+    transform-origin: left top;
+  }
+
+  .landing__purpose-copy {
+    right: var(--landing-gutter);
+    bottom: 4.5rem;
+    font-size: 2.25rem;
+  }
+
+  .landing__community {
+    height: 55.5rem;
+    min-height: 55.5rem;
+    gap: 1.5rem;
+  }
+
+  .landing__community-panel {
+    height: 26rem;
+    flex-basis: 26rem;
+  }
+
+  .landing__community-content {
+    gap: 1.75rem;
+    padding: 4.5rem 7.5rem 11rem;
+  }
+
+  .landing__community-content p {
+    font-size: 2.2rem;
+  }
+
+  .landing__community-content a {
+    padding: 0.875rem 2.25rem;
+    font-size: 1.25rem;
+  }
+
+  .landing__community-hands {
+    width: min(var(--landing-content-width), calc(100% - 12rem));
+    height: 24rem;
+  }
+
+  .landing__process {
+    padding-inline: var(--landing-gutter);
+  }
+
+  .landing__process-rope,
+  .landing__process-cards {
+    width: min(calc(100% - 12rem), var(--landing-content-width));
+    max-width: var(--landing-content-width);
+  }
+
+  .landing__process-cards {
+    padding-inline: 4rem;
+    scale: 0.92;
+    transform-origin: top center;
+  }
+
+  .landing__process-card > div {
+    gap: 1.25rem;
+  }
+
+  .landing__process-card h3 {
+    font-size: 1.75rem;
+  }
+
+  .landing__process-card p {
+    font-size: 1.25rem;
+  }
+
+  .landing__voices-copy {
+    gap: 1rem;
+  }
+
+  .landing__voices-copy h2,
+  .landing__voices-copy p {
+    font-size: min(4.1667vw, 3.75rem);
+  }
+
+  .landing__invite {
+    min-height: 46rem;
+    padding-right: var(--landing-gutter);
+    padding-left: var(--landing-gutter);
+  }
+
+  .landing__invite-inner {
+    max-width: var(--landing-content-width);
+    height: 36.5rem;
+    gap: 2.5rem;
+  }
+
+  .landing__invite-warning {
+    width: min(100%, 54rem);
+    height: 19.5rem;
+  }
+
+  .landing__invite-row {
+    height: 15.5rem;
+    gap: 3rem;
+  }
+
+  .landing__invite-content p {
+    font-size: 2.25rem;
+  }
+
+  .landing__invite-megaphone,
+  .landing__invite-megaphone--right {
+    width: 15.5rem;
+    height: 15.5rem;
+    flex-basis: 15.5rem;
+  }
 }
 
 .landing__section {
