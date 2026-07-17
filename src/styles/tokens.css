@@ -1,0 +1,195 @@
+/**
+ * College Review — Neo-brutalism design tokens
+ * Primary: #FD5D05 · Shadows: solid black · Type: Stack Sans Headline
+ */
+
+:root {
+  /* ─── Typography: Font Families ─── */
+  --font-family-sans: var(--font-stack-sans), ui-sans-serif, system-ui, sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-family-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+    "Liberation Mono", monospace;
+
+  /* ─── Typography: Font Sizes ─── */
+  --font-size-xs: 0.75rem; /* 12px */
+  --font-size-sm: 0.875rem; /* 14px */
+  --font-size-base: 1rem; /* 16px */
+  --font-size-lg: 1.125rem; /* 18px */
+  --font-size-xl: 1.25rem; /* 20px */
+  --font-size-2xl: 1.5rem; /* 24px */
+  --font-size-3xl: 1.875rem; /* 30px */
+  --font-size-4xl: 2.25rem; /* 36px */
+  --font-size-5xl: 3rem; /* 48px */
+  --font-size-6xl: 3.75rem; /* 60px */
+
+  /* ─── Typography: Font Weights ─── */
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* ─── Typography: Line Heights ─── */
+  --line-height-none: 1;
+  --line-height-tight: 1.15;
+  --line-height-snug: 1.3;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.625;
+  --line-height-loose: 2;
+
+  /* ─── Typography: Letter Spacing ─── */
+  --letter-spacing-tighter: -0.05em;
+  --letter-spacing-tight: -0.03em;
+  --letter-spacing-normal: 0em;
+  --letter-spacing-wide: 0.025em;
+  --letter-spacing-wider: 0.05em;
+
+  /* ─── Spacing Scale ─── */
+  --space-0: 0;
+  --space-px: 1px;
+  --space-0-5: 0.125rem;
+  --space-1: 0.25rem;
+  --space-1-5: 0.375rem;
+  --space-2: 0.5rem;
+  --space-2-5: 0.625rem;
+  --space-3: 0.75rem;
+  --space-3-5: 0.875rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-7: 1.75rem;
+  --space-8: 2rem;
+  --space-9: 2.25rem;
+  --space-10: 2.5rem;
+  --space-11: 2.75rem;
+  --space-12: 3rem;
+  --space-14: 3.5rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+  --space-28: 7rem;
+  --space-32: 8rem;
+  --space-36: 9rem;
+  --space-40: 10rem;
+  --space-44: 11rem;
+  --space-48: 12rem;
+  --space-52: 13rem;
+  --space-56: 14rem;
+  --space-60: 15rem;
+  --space-64: 16rem;
+  --space-72: 18rem;
+  --space-80: 20rem;
+  --space-96: 24rem;
+
+  /* ─── Border Radius: always sharp (no rounding) ─── */
+  --radius-token-none: 0;
+  --radius-token-sm: 0;
+  --radius-token-md: 0;
+  --radius-token-lg: 0;
+  --radius-token-xl: 0;
+  --radius-token-2xl: 0;
+  --radius-token-3xl: 0;
+  --radius-token-full: 0;
+
+  --radius: 0;
+
+  /* ─── Brutal shadows & borders ─── */
+  --color-ink: #000000;
+  --shadow-brutal: 4px 4px 0 var(--color-ink);
+  --shadow-brutal-sm: 2px 2px 0 var(--color-ink);
+  --shadow-brutal-lg: 6px 6px 0 var(--color-ink);
+  --shadow-brutal-xl: 8px 8px 0 var(--color-ink);
+  --border-brutal-width: 2px;
+  --border-brutal: var(--border-brutal-width) solid var(--color-ink);
+
+  /* ─── Color: Primitives ─── */
+  --color-white: #ffffff;
+  --color-black: #000000;
+  --color-neutral-50: #f7f7f5;
+  --color-neutral-100: #efefec;
+  --color-neutral-200: #dcdcd6;
+  --color-neutral-300: #c4c4bc;
+  --color-neutral-400: #9a9a92;
+  --color-neutral-500: #6e6e68;
+  --color-neutral-600: #52524c;
+  --color-neutral-700: #3a3a36;
+  --color-neutral-800: #242422;
+  --color-neutral-900: #141412;
+  --color-neutral-950: #0a0a09;
+  --color-red-500: #e11d48;
+  --color-red-400: #fb7185;
+  --color-primary: #fd5d05;
+  --color-primary-foreground: #ffffff;
+  --color-star: #fd5d05;
+
+  /* ─── Color: Semantic (light mode) ─── */
+  --background: #fffaf6;
+  --foreground: var(--color-ink);
+  --card: var(--color-white);
+  --card-foreground: var(--color-ink);
+  --popover: var(--color-white);
+  --popover-foreground: var(--color-ink);
+  --primary: var(--color-primary);
+  --primary-foreground: var(--color-primary-foreground);
+  --secondary: var(--color-neutral-100);
+  --secondary-foreground: var(--color-ink);
+  --muted: var(--color-neutral-100);
+  --muted-foreground: var(--color-neutral-600);
+  --accent: var(--color-primary);
+  --accent-foreground: var(--color-primary-foreground);
+  --destructive: var(--color-red-500);
+  --border: var(--color-ink);
+  --input: var(--color-ink);
+  --ring: var(--color-primary);
+  --chart-1: var(--color-primary);
+  --chart-2: var(--color-neutral-500);
+  --chart-3: var(--color-neutral-600);
+  --chart-4: var(--color-neutral-700);
+  --chart-5: var(--color-neutral-800);
+  --sidebar: var(--color-white);
+  --sidebar-foreground: var(--color-ink);
+  --sidebar-primary: var(--color-primary);
+  --sidebar-primary-foreground: var(--color-primary-foreground);
+  --sidebar-accent: var(--color-neutral-100);
+  --sidebar-accent-foreground: var(--color-ink);
+  --sidebar-border: var(--color-ink);
+  --sidebar-ring: var(--color-primary);
+}
+
+.dark {
+  --background: var(--color-neutral-950);
+  --foreground: var(--color-neutral-50);
+  --card: var(--color-neutral-900);
+  --card-foreground: var(--color-neutral-50);
+  --popover: var(--color-neutral-900);
+  --popover-foreground: var(--color-neutral-50);
+  --primary: var(--color-primary);
+  --primary-foreground: var(--color-primary-foreground);
+  --secondary: var(--color-neutral-800);
+  --secondary-foreground: var(--color-neutral-50);
+  --muted: var(--color-neutral-800);
+  --muted-foreground: var(--color-neutral-400);
+  --accent: var(--color-primary);
+  --accent-foreground: var(--color-primary-foreground);
+  --destructive: var(--color-red-400);
+  --border: var(--color-neutral-50);
+  --input: var(--color-neutral-50);
+  --ring: var(--color-primary);
+  --chart-1: var(--color-primary);
+  --chart-2: var(--color-neutral-500);
+  --chart-3: var(--color-neutral-600);
+  --chart-4: var(--color-neutral-700);
+  --chart-5: var(--color-neutral-800);
+  --sidebar: var(--color-neutral-900);
+  --sidebar-foreground: var(--color-neutral-50);
+  --sidebar-primary: var(--color-primary);
+  --sidebar-primary-foreground: var(--color-primary-foreground);
+  --sidebar-accent: var(--color-neutral-800);
+  --sidebar-accent-foreground: var(--color-neutral-50);
+  --sidebar-border: var(--color-neutral-50);
+  --sidebar-ring: var(--color-primary);
+  --color-ink: #ffffff;
+  --shadow-brutal: 4px 4px 0 #ffffff;
+  --shadow-brutal-sm: 2px 2px 0 #ffffff;
+  --shadow-brutal-lg: 6px 6px 0 #ffffff;
+  --shadow-brutal-xl: 8px 8px 0 #ffffff;
+}

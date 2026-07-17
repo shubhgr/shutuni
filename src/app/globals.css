@@ -1,26 +1,159 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "../styles/tokens.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@custom-variant dark (&:is(.dark *));
 
 @theme inline {
+  /* ─── Colors (shadcn semantic) ─── */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  /* ─── Typography ─── */
+  --font-sans: var(--font-family-sans);
+  --font-mono: var(--font-family-mono);
+  --font-heading: var(--font-family-sans);
+
+  --text-xs: var(--font-size-xs);
+  --text-xs--line-height: var(--line-height-normal);
+  --text-sm: var(--font-size-sm);
+  --text-sm--line-height: var(--line-height-normal);
+  --text-base: var(--font-size-base);
+  --text-base--line-height: var(--line-height-normal);
+  --text-lg: var(--font-size-lg);
+  --text-lg--line-height: var(--line-height-normal);
+  --text-xl: var(--font-size-xl);
+  --text-xl--line-height: var(--line-height-tight);
+  --text-2xl: var(--font-size-2xl);
+  --text-2xl--line-height: var(--line-height-tight);
+  --text-3xl: var(--font-size-3xl);
+  --text-3xl--line-height: var(--line-height-tight);
+  --text-4xl: var(--font-size-4xl);
+  --text-4xl--line-height: var(--line-height-tight);
+  --text-5xl: var(--font-size-5xl);
+  --text-5xl--line-height: var(--line-height-none);
+  --text-6xl: var(--font-size-6xl);
+  --text-6xl--line-height: var(--line-height-none);
+
+  --font-weight-normal: var(--font-weight-normal);
+  --font-weight-medium: var(--font-weight-medium);
+  --font-weight-semibold: var(--font-weight-semibold);
+  --font-weight-bold: var(--font-weight-bold);
+
+  --tracking-tighter: var(--letter-spacing-tighter);
+  --tracking-tight: var(--letter-spacing-tight);
+  --tracking-normal: var(--letter-spacing-normal);
+  --tracking-wide: var(--letter-spacing-wide);
+  --tracking-wider: var(--letter-spacing-wider);
+
+  /* ─── Spacing ─── */
+  --spacing-0: var(--space-0);
+  --spacing-px: var(--space-px);
+  --spacing-0-5: var(--space-0-5);
+  --spacing-1: var(--space-1);
+  --spacing-1-5: var(--space-1-5);
+  --spacing-2: var(--space-2);
+  --spacing-2-5: var(--space-2-5);
+  --spacing-3: var(--space-3);
+  --spacing-3-5: var(--space-3-5);
+  --spacing-4: var(--space-4);
+  --spacing-5: var(--space-5);
+  --spacing-6: var(--space-6);
+  --spacing-7: var(--space-7);
+  --spacing-8: var(--space-8);
+  --spacing-9: var(--space-9);
+  --spacing-10: var(--space-10);
+  --spacing-11: var(--space-11);
+  --spacing-12: var(--space-12);
+  --spacing-14: var(--space-14);
+  --spacing-16: var(--space-16);
+  --spacing-20: var(--space-20);
+  --spacing-24: var(--space-24);
+  --spacing-28: var(--space-28);
+  --spacing-32: var(--space-32);
+  --spacing-36: var(--space-36);
+  --spacing-40: var(--space-40);
+  --spacing-44: var(--space-44);
+  --spacing-48: var(--space-48);
+  --spacing-52: var(--space-52);
+  --spacing-56: var(--space-56);
+  --spacing-60: var(--space-60);
+  --spacing-64: var(--space-64);
+  --spacing-72: var(--space-72);
+  --spacing-80: var(--space-80);
+  --spacing-96: var(--space-96);
+
+  /* ─── Border Radius (shadcn + platform) ─── */
+  --radius-none: var(--radius-token-none);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+  --radius-full: var(--radius-token-full);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+    border-radius: 0 !important;
   }
-}
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  html {
+    @apply font-sans antialiased;
+    font-family: var(--font-family-sans);
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-family-sans);
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-normal);
+    line-height: var(--line-height-normal);
+    min-height: 100vh;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-family-sans);
+    font-weight: var(--font-weight-bold);
+    line-height: var(--line-height-tight);
+    letter-spacing: var(--letter-spacing-tight);
+  }
 }

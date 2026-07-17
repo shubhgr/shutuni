@@ -1,0 +1,10 @@
+<svg preserveAspectRatio="none" width="100%" height="100%" overflow="visible" viewBox="0 0 1623.6 747.6" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <g filter="url(#blur)">
+    <ellipse cx="811.8" cy="373.8" rx="611.5" ry="173.5" fill="#fff"/>
+  </g>
+  <defs>
+    <filter id="blur" x="0" y="0" width="1623.6" height="747.6" filterUnits="userSpaceOnUse">
+      <feGaussianBlur stdDeviation="100.15"/>
+    </filter>
+  </defs>
+</svg>
