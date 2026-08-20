@@ -24,6 +24,7 @@ export default function HomePage() {
               sizes="(max-width: 1440px) 100vw, 1440px"
               preload
             />
+            <div className="suhome__hero-fold-collage-fade" aria-hidden="true" />
           </div>
         </div>
 
@@ -58,15 +59,15 @@ export default function HomePage() {
               sizes="350px"
             />
           </div>
-          <Image
-            className="suhome__hero-fold-mic"
-            src="/home/mic-hand.png"
-            alt=""
-            width={226}
-            height={268}
-            sizes="226px"
-          />
         </div>
+        <Image
+          className="suhome__hero-fold-mic"
+          src="/home/mic-hand.png"
+          alt=""
+          width={226}
+          height={268}
+          sizes="226px"
+        />
       </section>
 
       <div className="suhome">
@@ -123,7 +124,7 @@ export default function HomePage() {
                   src="/home/process-line.svg"
                   alt=""
                   width={3935}
-                  height={311}
+                  height={381}
                   sizes="1440px"
                 />
               </div>

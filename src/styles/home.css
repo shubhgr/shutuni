@@ -125,25 +125,6 @@
   width: 100%;
   min-height: 0;
   aspect-ratio: 1170 / 672;
-  /*
-    Ellipse 43513 (Figma CSS):
-      width: 1440px; height: 408px;
-      left: -120px; top: -151px;
-      border-radius: 1440px; filter: blur(100.15px);
-    Mask SVG (with blur padding): 1840.6×808.6
-    Figma mask on image: size 1840.6×808.6, pos -529.43×-351.3
-    Converted to % for a 1200×689 collage box so it scales.
-  */
-  -webkit-mask-image: url("/home/hero-mask.svg");
-  -webkit-mask-repeat: no-repeat;
-  -webkit-mask-size: 153.383% 117.32%;
-  -webkit-mask-position: -44.119% -50.97%;
-  -webkit-mask-clip: no-clip;
-  mask-image: url("/home/hero-mask.svg");
-  mask-repeat: no-repeat;
-  mask-size: 153.383% 117.32%;
-  mask-position: -44.119% -50.97%;
-  mask-clip: no-clip;
 }
 
 .suhome__hero-fold-collage img {
@@ -154,6 +135,19 @@
   max-width: none;
   object-fit: cover;
   pointer-events: none;
+}
+
+/* Same-size overlay — soft fade into hero bg #FBFBFB */
+.suhome__hero-fold-collage-fade {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: radial-gradient(
+    209.85% 58.25% at 49.96% 31.64%,
+    rgba(251, 251, 251, 0) 0%,
+    #fbfbfb 100%
+  );
 }
 
 .suhome__hero-fold-copy {
@@ -224,7 +218,7 @@
   left: 50%;
   bottom: -10.875rem; /* -174px */
   width: 100%;
-  max-width: 90rem; /* 1440px — only this prop frame */
+  max-width: var(--su-max); /* 1440px — grad cap stays on content frame */
   height: 26.375rem; /* 422px */
   transform: translateX(-50%);
   pointer-events: none;
@@ -248,13 +242,16 @@
   transform: rotate(-29.45deg);
 }
 
+/* Mic is outside the max-width props frame so it stays on the viewport right */
 .suhome__hero-fold-mic {
   position: absolute;
-  right: 0.01375rem;
-  bottom: 7.745rem; /* 123.92px */
+  z-index: 4;
+  right: 0;
+  bottom: -3.13rem; /* matches previous visual: props bottom -10.875 + mic bottom 7.745 */
   width: 14.125rem; /* 226px */
   height: 16.75rem; /* 268px */
   object-fit: cover;
+  pointer-events: none;
 }
 
 /* ── Pillars — Figma 569:158 / 557:55 ─────────────── */
@@ -439,7 +436,7 @@
   display: flex;
   width: 280%;
   height: auto;
-  aspect-ratio: 3935 / 311;
+  aspect-ratio: 3935.46 / 380.856;
   align-items: center;
   justify-content: center;
   transform: translate(-50%, -50%);
@@ -468,7 +465,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 4.375rem; /* 70px */
+  width: 4.375rem; /* 70px — matches rail stroke */
   height: 4.375rem;
   padding: 0;
   border: 0;
@@ -497,10 +494,14 @@
   white-space: nowrap;
 }
 
-/* 01 — left flat: circle on line, label below */
+/*
+  Rail Y (stroke centers) within the track, with the SVG centered:
+  left flat ≈ 81% · peak ≈ 18% · right flat ≈ 70% of track height.
+  Circle is 70px; top = railY − 35px. Labels offset via flex gap.
+*/
 .suhome__step--one {
   left: 0;
-  top: 14.25rem;
+  top: 16.85rem; /* circle centered on left flat */
   align-items: flex-start;
 }
 
@@ -508,17 +509,15 @@
   text-align: left;
 }
 
-/* 02 — peak: circle on crest, label under arch */
 .suhome__step--two {
   left: 50%;
-  top: 1.35rem;
+  top: 2.65rem; /* circle centered on peak */
   transform: translateX(-50%);
 }
 
-/* 03 — right flat: label ABOVE, circle on line */
 .suhome__step--three {
   right: 0;
-  top: 8.35rem; /* label sits above; circle aligns with flat */
+  top: 9.85rem; /* label above; circle centered on right flat */
 }
 
 /* ── Record — Figma 569:179 ─────────────────────────── */
@@ -690,16 +689,16 @@
   width: 100%;
   max-width: 75rem; /* 1200px text row */
   align-items: center;
-  justify-content: center;
-  gap: 12.5rem; /* 200px */
-  padding: 0 6.25rem;
+  justify-content: space-between;
+  gap: 6.25rem; /* 100px */
+  padding: 0;
   box-sizing: border-box;
 }
 
 .suhome__anon-copy {
   position: relative;
   z-index: 1;
-  flex: 1 1 0;
+  flex: 0 1 auto;
   min-width: 0;
 }
 
@@ -709,15 +708,16 @@
   flex-direction: column;
   gap: 0.75rem;
   color: #1e1e1e;
-  font-size: 3rem; /* 48px */
+  font-size: 48px;
   font-weight: 700;
   line-height: 1;
   letter-spacing: 0.0625rem;
+  white-space: nowrap;
 }
 
 .suhome__anon-copy span {
   color: #f95c05;
-  font-size: 3rem;
+  font-size: 48px;
   font-weight: 700;
   line-height: 1;
   letter-spacing: 0.0625rem;
@@ -727,12 +727,12 @@
 .suhome__anon-note {
   position: relative;
   z-index: 1;
-  flex: 1 1 0;
-  max-width: 22.5rem; /* 360px */
+  flex: 0 1 22.5rem; /* 360px */
+  max-width: 22.5rem;
   min-width: 0;
   margin: 0;
   color: #242628;
-  font-size: 1.25rem; /* 20px */
+  font-size: 20px;
   font-weight: 400;
   line-height: 1.35;
   letter-spacing: -0.01875rem;
@@ -1608,11 +1608,16 @@
 
   .suhome__anon-copy h2 {
     font-size: 1.85rem;
+    white-space: normal;
   }
 
   .suhome__anon-copy span {
-    font-size: 2.1rem;
+    font-size: 1.85rem;
     white-space: normal;
+  }
+
+  .suhome__anon-note {
+    font-size: 1rem;
   }
 
   .suhome__truths {
