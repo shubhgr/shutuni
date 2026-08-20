@@ -8,6 +8,7 @@
   --su-ink: #1e1e1e;
   --su-dark: #232527;
   --su-muted: #878787;
+  --su-max: 90rem; /* 1440px */
 }
 
 .suhome-frame {
@@ -26,6 +27,7 @@
   --su-ink: #1e1e1e;
   --su-dark: #232527;
   --su-muted: #878787;
+  --su-max: 90rem; /* 1440px */
   width: 100%;
   min-height: 100vh;
   flex-shrink: 0;
@@ -111,7 +113,7 @@
   flex-direction: column;
   align-items: center;
   width: 100%;
-  max-width: 75rem; /* 1200px */
+  max-width: 75rem; /* 1200px — Figma Mask group */
   min-height: 0;
   margin-bottom: -1.875rem; /* -30px */
   pointer-events: none;
@@ -123,15 +125,24 @@
   width: 100%;
   min-height: 0;
   aspect-ratio: 1170 / 672;
+  /*
+    Ellipse 43513 (Figma CSS):
+      width: 1440px; height: 408px;
+      left: -120px; top: -151px;
+      border-radius: 1440px; filter: blur(100.15px);
+    Mask SVG (with blur padding): 1840.6×808.6
+    Figma mask on image: size 1840.6×808.6, pos -529.43×-351.3
+    Converted to % for a 1200×689 collage box so it scales.
+  */
   -webkit-mask-image: url("/home/hero-mask.svg");
   -webkit-mask-repeat: no-repeat;
-  -webkit-mask-size: 157.316% 120.327%;
-  -webkit-mask-position: -42.274% -46.325%;
+  -webkit-mask-size: 153.383% 117.32%;
+  -webkit-mask-position: -44.119% -50.97%;
   -webkit-mask-clip: no-clip;
   mask-image: url("/home/hero-mask.svg");
   mask-repeat: no-repeat;
-  mask-size: 157.316% 120.327%;
-  mask-position: -42.274% -46.325%;
+  mask-size: 153.383% 117.32%;
+  mask-position: -44.119% -50.97%;
   mask-clip: no-clip;
 }
 
@@ -150,7 +161,7 @@
   z-index: 3;
   display: flex;
   width: 100%;
-  max-width: 75rem;
+  max-width: var(--su-max);
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -163,7 +174,7 @@
   margin: 0;
   display: flex;
   width: 100%;
-  max-width: 75rem;
+  max-width: var(--su-max);
   flex-direction: column;
   align-items: center;
   gap: 0.75rem;
@@ -264,10 +275,16 @@
   position: absolute;
   z-index: 0;
   top: -1.6875rem; /* -27px */
-  left: calc(50% + 3.125rem); /* calc(50% + 50px) */
-  width: min(100%, 83.75rem); /* 1340px */
+  /*
+    At ≤1440: 100px from viewport left (Figma).
+    When wider / zoomed out: left edge stays on the centered 1440 frame
+    so the shape only grows toward the right.
+  */
+  left: max(6.25rem, calc((100% - var(--su-max)) / 2 + 6.25rem));
+  right: 0;
+  width: auto;
   height: 48.9375rem; /* 783px */
-  transform: translateX(-50%);
+  transform: none;
   pointer-events: none;
 }
 
@@ -280,7 +297,7 @@
   z-index: 2;
   display: flex;
   width: 100%;
-  max-width: 75rem;
+  max-width: var(--su-max);
   flex: 1 0 0;
   flex-direction: column;
   align-items: flex-end;
@@ -371,7 +388,7 @@
   pointer-events: none;
 }
 
-/* ── Process — Figma 569:158 / 564:98 ─────────────── */
+/* ── Process — Figma 610:2 ──────────────────────────── */
 
 .suhome__process {
   position: relative;
@@ -380,7 +397,7 @@
   align-items: center;
   justify-content: center;
   width: 100%;
-  height: 52rem; /* 832px */
+  height: 53.5rem; /* 856px */
   padding: 6.25rem;
   overflow: clip;
   background: var(--su-dark);
@@ -390,7 +407,7 @@
 .suhome__process-inner {
   display: flex;
   width: 100%;
-  max-width: 75rem;
+  max-width: var(--su-max);
   flex-direction: column;
   align-items: center;
   gap: 8rem; /* 128px */
@@ -411,18 +428,21 @@
 .suhome__process-track {
   position: relative;
   width: 100%;
-  height: 28.5rem;
+  height: 26rem;
 }
 
 .suhome__process-line {
   position: absolute;
   z-index: 0;
-  top: 2.75rem;
+  top: 50%;
   left: 50%;
-  width: 322.9%; /* 3875 / 1200 */
+  display: flex;
+  width: 280%;
   height: auto;
-  aspect-ratio: 3875 / 366;
-  transform: translateX(-50%);
+  aspect-ratio: 3935 / 311;
+  align-items: center;
+  justify-content: center;
+  transform: translate(-50%, -50%);
   pointer-events: none;
 }
 
@@ -439,6 +459,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  gap: 1.5rem; /* 24px */
   margin: 0;
 }
 
@@ -448,7 +470,9 @@
   justify-content: center;
   width: 4.375rem; /* 70px */
   height: 4.375rem;
-  border-radius: 50%;
+  padding: 0;
+  border: 0;
+  border-radius: 9999px !important; /* circle — beats global * { border-radius: 0 } */
   background: #fff;
   color: #000;
   font-size: 2.25rem;
@@ -458,6 +482,8 @@
   text-align: center;
   box-sizing: border-box;
   flex-shrink: 0;
+  overflow: hidden;
+  aspect-ratio: 1 / 1;
 }
 
 .suhome__step p {
@@ -471,24 +497,28 @@
   white-space: nowrap;
 }
 
-/* Circles sit ON the orange stroke; labels hang below */
+/* 01 — left flat: circle on line, label below */
 .suhome__step--one {
-  left: 1rem;
-  top: 15.35rem; /* flat of curve */
-  gap: 3.375rem;
+  left: 0;
+  top: 14.25rem;
+  align-items: flex-start;
 }
 
+.suhome__step--one p {
+  text-align: left;
+}
+
+/* 02 — peak: circle on crest, label under arch */
 .suhome__step--two {
   left: 50%;
-  top: 2.35rem; /* peak of curve */
-  gap: 9.5rem; /* label under the arch */
+  top: 1.35rem;
   transform: translateX(-50%);
 }
 
+/* 03 — right flat: label ABOVE, circle on line */
 .suhome__step--three {
-  right: 1rem;
-  top: 15.35rem; /* flat of curve */
-  gap: 3.375rem;
+  right: 0;
+  top: 8.35rem; /* label sits above; circle aligns with flat */
 }
 
 /* ── Record — Figma 569:179 ─────────────────────────── */
@@ -500,18 +530,24 @@
   height: 39.9926875rem; /* ~640px */
   align-items: center;
   justify-content: center;
-  overflow: clip;
+  overflow: visible;
   background: var(--su-orange-hot);
   box-sizing: border-box;
 }
 
+/* Centered content (copy + tablet) — max 1440px */
 .suhome__record-inner {
   position: relative;
+  z-index: 1;
   display: flex;
   width: 100%;
-  max-width: 75rem; /* 1200px — centered on big screens */
+  max-width: var(--su-max); /* 1440px */
   align-items: center;
+  justify-content: center;
   gap: 2rem; /* 32px */
+  /* Leave room so copy doesn't sit under the left-edge mic */
+  padding-left: 16.9375rem; /* 239 + 32 */
+  box-sizing: border-box;
 }
 
 .suhome__record-copy {
@@ -570,17 +606,19 @@
 }
 
 .suhome__mic {
-  position: relative;
-  z-index: 2;
-  flex-shrink: 0;
   pointer-events: none;
   object-fit: cover;
 }
 
+/* Hand pinned to the left end of the full-bleed orange section */
 .suhome__mic--record {
+  position: absolute;
+  z-index: 2;
+  left: 0;
+  top: 50%;
   width: 14.9375rem; /* 239px */
   height: 17.6875rem; /* 283px */
-  transform: rotate(180deg) scaleY(-1);
+  transform: translateY(-50%) rotate(180deg) scaleY(-1);
 }
 
 .suhome__tablet-wrap {
@@ -623,163 +661,240 @@
   object-fit: contain;
 }
 
-/* ── Anonymity ──────────────────────────────────────── */
+/* ── Anonymity — Figma 569:209 ──────────────────────── */
 
 .suhome__anon {
   position: relative;
-  height: 49rem;
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 6.25rem 0 0; /* 100px top */
   overflow: hidden;
   background: #fefefe;
+  box-sizing: border-box;
 }
 
-.suhome__anon-crowd {
-  top: -3.75rem !important;
-  height: 57.0625rem !important;
-  object-fit: cover;
-  object-position: center top;
+.suhome__anon-inner {
+  display: flex;
+  width: 100%;
+  max-width: 100rem; /* 1600px — do not expand past this */
+  flex-direction: column;
+  align-items: center;
+  gap: 3.75rem; /* 60px */
+}
+
+.suhome__anon-head {
+  display: flex;
+  width: 100%;
+  max-width: 75rem; /* 1200px text row */
+  align-items: center;
+  justify-content: center;
+  gap: 12.5rem; /* 200px */
+  padding: 0 6.25rem;
+  box-sizing: border-box;
 }
 
 .suhome__anon-copy {
-  position: absolute;
+  position: relative;
   z-index: 1;
-  top: 5.75rem;
-  left: calc(50% - 33.531rem);
-  width: 33.5625rem;
+  flex: 1 1 0;
+  min-width: 0;
 }
 
 .suhome__anon-copy h2 {
   margin: 0;
   display: flex;
   flex-direction: column;
-  color: #242628;
-  font-size: 3.375rem;
-  font-weight: 500;
-  line-height: 1.16;
-  letter-spacing: -0.0625rem;
+  gap: 0.75rem;
+  color: #1e1e1e;
+  font-size: 3rem; /* 48px */
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.0625rem;
 }
 
 .suhome__anon-copy span {
-  color: #ff5a1f;
-  font-size: 4.5rem;
+  color: #f95c05;
+  font-size: 3rem;
   font-weight: 700;
   line-height: 1;
-  letter-spacing: -0.12rem;
-  white-space: nowrap;
+  letter-spacing: 0.0625rem;
+  text-transform: uppercase;
 }
 
 .suhome__anon-note {
-  position: absolute;
+  position: relative;
   z-index: 1;
-  top: 6.3125rem;
-  left: calc(50% + 12rem);
-  width: 25.375rem;
+  flex: 1 1 0;
+  max-width: 22.5rem; /* 360px */
+  min-width: 0;
   margin: 0;
   color: #242628;
-  font-size: 1.25rem;
+  font-size: 1.25rem; /* 20px */
+  font-weight: 400;
   line-height: 1.35;
   letter-spacing: -0.01875rem;
 }
 
-/* ── Unfiltered truths ──────────────────────────────── */
+.suhome__anon-crowd-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 100rem; /* 1600px */
+  aspect-ratio: 1723 / 542;
+  overflow: hidden;
+}
+
+.suhome__anon-crowd {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 168.45% !important;
+  top: -68.45% !important;
+  left: 0 !important;
+  object-fit: cover;
+  object-position: center top;
+}
+
+/* ── Unfiltered truths — Figma 597:290 ──────────────── */
 
 .suhome__truths {
   position: relative;
-  height: 59.3125rem;
-  overflow: hidden;
-  background: #fefefe;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 10rem 6.25rem; /* 160 / 100 */
+  overflow: visible;
+  background: linear-gradient(
+    180deg,
+    var(--su-orange-deep) 0%,
+    var(--su-orange-deep) 50%,
+    #242628 50%,
+    #242628 100%
+  );
+  box-sizing: border-box;
 }
 
-.suhome__truths-top {
-  height: 32.625rem;
-  background: var(--su-orange-deep);
+.suhome__truths-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3.75rem; /* 60px */
+  width: 100%;
+  max-width: var(--su-max); /* 1440px */
 }
 
-.suhome__truths-bottom {
+.suhome__typewriter-wrap {
   position: relative;
-  height: 26.6875rem;
-  background: #242628;
+  z-index: 1;
+  flex-shrink: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  width: 31.125rem; /* 498px */
+  height: 44.625rem; /* 714px */
+  pointer-events: none;
+  overflow: visible;
+}
+
+.suhome__typewriter {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 31.125rem;
+  height: 52.4375rem; /* 839px — extends above wrap */
+  max-width: none;
+  object-fit: cover;
+  object-position: left top;
+  /* Figma: shadow-[0px_12px_60px_0px_rgba(0,0,0,0.32)] */
+  filter: drop-shadow(0 12px 60px rgb(0 0 0 / 32%));
 }
 
 .suhome__truths-copy {
-  position: absolute;
-  z-index: 1;
-  top: 6.5rem;
-  left: 45rem;
   display: flex;
-  width: 30.875rem;
+  flex: 1 0 0;
   flex-direction: column;
-  gap: 2.3125rem;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 18.75rem; /* 300px */
+  min-width: 0;
 }
 
-.suhome__truths-copy h2 {
-  width: 37.375rem;
+.suhome__truths-copy-top {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 2.3125rem; /* 37px */
+  color: #fff;
+}
+
+.suhome__truths-copy-top h2 {
+  width: 100%;
   margin: 0;
   color: #fff;
-  font-size: 4rem;
+  font-size: 3rem; /* 48px */
   font-weight: 700;
   line-height: 1;
-  letter-spacing: -0.12rem;
+  letter-spacing: 0.0625rem;
 }
 
-.suhome__truths-copy p {
+.suhome__truths-copy-top p {
+  width: 100%;
   margin: 0;
-  color: var(--su-paper);
-  font-size: 1.125rem;
-  line-height: 1.25;
-  letter-spacing: -0.01875rem;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.375rem;
+  letter-spacing: 0.0375rem;
 }
 
-.suhome__truths-bottom h2 {
-  position: absolute;
-  top: 4.1875rem;
-  left: 40.6875rem;
+.suhome__truths-copy-bottom {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 1.4375rem; /* 23px */
+}
+
+.suhome__truths-copy-bottom h2 {
+  width: 100%;
   margin: 0;
-  color: #f6f6f6;
-  font-size: 4rem;
+  color: #fff;
+  font-size: 3rem;
   font-weight: 700;
-  letter-spacing: -0.12rem;
   line-height: 1;
-  white-space: nowrap;
+  letter-spacing: 0.0625rem;
 }
 
 .suhome__count {
-  position: absolute;
-  top: 9.625rem;
-  left: 48.5625rem;
   display: flex;
   align-items: center;
+  justify-content: center;
   margin: 0;
   padding: 1rem 1.5rem;
-  border: 7px solid var(--su-orange-deep);
+  border: 4px solid var(--su-orange-deep);
   background: #fbfbfb;
   color: var(--su-orange);
-  font-size: 3rem;
-  font-weight: 700;
+  font-size: 2.5rem; /* 40px */
+  font-weight: 500;
   letter-spacing: -0.12rem;
   line-height: 1;
   white-space: nowrap;
 }
 
 .suhome__count strong {
-  font-size: 5.25rem;
-  font-weight: 700;
+  font-size: 3.5rem; /* 56px */
+  font-weight: 500;
   line-height: 1;
 }
 
-.suhome__typewriter {
-  position: absolute;
-  z-index: 2;
-  top: 4.625rem;
-  left: 6.9375rem;
-  width: 27.5625rem;
-  height: 46.4375rem;
-  object-fit: cover;
-  object-position: left top;
-  box-shadow: 0 4px 42.7px rgb(0 0 0 / 75%);
-  pointer-events: none;
-}
-
-/* ── Voices — Figma CTA before footer ───────────────── */
+/* ── Voices — Figma 597:303 ─────────────────────────── */
 
 .suhome__voices {
   position: relative;
@@ -790,8 +905,8 @@
   justify-content: center;
   align-items: center;
   align-self: stretch;
-  overflow: hidden;
-  background: var(--su-dark);
+  overflow: visible;
+  background: #232527;
 }
 
 .suhome__voices-inner {
@@ -802,8 +917,9 @@
   align-items: center;
   gap: 5rem; /* 80px */
   width: 100%;
-  max-width: 75rem; /* 1200px */
+  max-width: 75rem; /* 1200px — Figma Frame 2147228599 */
   min-width: 0;
+  overflow: visible;
 }
 
 .suhome__voices-banner {
@@ -813,70 +929,103 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  align-self: stretch;
-  gap: 0.75rem;
-  padding: 10rem 6.25rem;
+  align-self: center;
+  width: 100%;
+  max-width: 56rem; /* ~896px — narrower paper cut */
+  padding: 8rem 4rem;
   overflow: hidden;
-  background: url("/home/torn-cta.png") -7.89% -12.49% / 116.4% 132.4% no-repeat;
 }
 
-.suhome__voices-banner h2,
-.suhome__voices-banner span {
+.suhome__voices-tear {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.suhome__voices-tear img {
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: fill;
+}
+
+.suhome__voices-copy {
   position: relative;
   z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem; /* 12px */
+  width: min(100%, 62.125rem); /* 994px */
+  text-align: center;
+}
+
+.suhome__voices-copy h2 {
   margin: 0;
+  color: #fafafa;
+  font-size: 3rem; /* 48px */
+  font-weight: 700;
+  letter-spacing: 0.0625rem;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.suhome__voices .suhome__voices-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 0.625rem 0.5rem;
+  border-radius: 0 !important;
+  background: #fbfbfb !important;
+  color: #fd5d05 !important;
   font-size: 3rem;
   font-weight: 700;
   letter-spacing: 0.0625rem;
   line-height: 1;
-  text-align: center;
   white-space: nowrap;
 }
 
-.suhome__voices-banner h2 {
-  color: #fafafa;
-}
-
-.suhome__voices-banner span {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.625rem 0.5rem;
-  background: #fbfbfb;
-  color: var(--su-orange);
-}
-
 .suhome__voices .suhome__btn {
+  position: relative;
+  z-index: 2;
   width: auto;
   height: auto;
   padding: 0.75rem 1rem;
+  border-radius: 0 !important;
   font-size: 1.125rem;
   font-weight: 500;
   line-height: 1.375rem;
 }
 
+/* Megaphones sit on the 1200px frame (Figma X:-276 / right:-286) */
 .suhome__voices-mega {
   position: absolute;
-  z-index: 2;
+  z-index: 3;
   top: 50%;
-  width: 16.875rem;
-  height: 15.9375rem;
-  object-fit: cover;
+  object-fit: contain;
   pointer-events: none;
   user-select: none;
-  mix-blend-mode: lighten;
-  transform: translateY(-50%);
 }
 
 .suhome__voices-mega--left {
-  left: 0.75rem;
-  transform: translateY(-50%) scaleX(-1);
+  left: -17.25rem; /* -276px */
+  width: 16.875rem; /* 270px */
+  height: 15.9375rem; /* 255px */
+  transform: translateY(-50%) rotate(180deg) scaleY(-1);
 }
 
 .suhome__voices-mega--right {
-  right: 0.375rem;
-  width: 17.5rem;
-  height: 16.75rem;
+  right: -17.875rem; /* -286px */
+  left: auto;
+  width: 17.5rem; /* 280px */
+  height: 16.75rem; /* 268px */
+  transform: translateY(-50%);
 }
 
 /* ── Footer — Figma 569:271 ─────────────────────────── */
@@ -884,7 +1033,7 @@
 .suhome__footer {
   position: relative;
   display: flex;
-  flex-direction: column;
+  justify-content: center;
   align-items: center;
   align-self: stretch;
   gap: 0.625rem;
@@ -900,7 +1049,7 @@
   align-self: stretch;
   gap: 10rem;
   width: 100%;
-  max-width: 75rem;
+  max-width: var(--su-max);
 }
 
 .suhome__footer-copy {
@@ -938,7 +1087,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 1.5rem;
+  gap: 2.0625rem; /* 33px — Figma nav → legal */
   width: 100%;
 }
 
@@ -946,7 +1095,7 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 2rem;
+  gap: 2.25rem; /* 36px */
   width: 100%;
   color: #fafafa;
   font-size: 1rem;
@@ -970,8 +1119,8 @@
 .suhome__footer-keyboard {
   position: relative;
   flex-shrink: 0;
-  width: 25rem;
-  height: 25rem;
+  width: 29.4375rem; /* 471px */
+  height: 29.4375rem;
 }
 
 .suhome__footer-keyboard img {
@@ -980,7 +1129,7 @@
   object-fit: cover;
 }
 
-/* ── Tablet / mid screens: fluid full-bleed, content max 1200 ── */
+/* ── Tablet / mid screens: fluid full-bleed, content max 1440 ── */
 
 @media (max-width: 1439px) and (min-width: 701px) {
   .suhome-frame {
@@ -1027,14 +1176,18 @@
     padding: clamp(4rem, 8vw, 10rem) clamp(1.5rem, 5vw, 6.25rem);
   }
 
-  .suhome__voices-banner h2,
-  .suhome__voices-banner span {
+  .suhome__voices-copy h2,
+  .suhome__voices-badge {
     font-size: clamp(1.75rem, 3.5vw, 3rem);
     white-space: normal;
   }
 
+  .suhome__voices-mega--left {
+    left: -8rem;
+  }
+
   .suhome__voices-mega--right {
-    right: -1rem;
+    right: -8rem;
   }
 
   .suhome__footer {
@@ -1046,6 +1199,33 @@
   }
 
   .suhome__footer-title {
+    font-size: clamp(1.75rem, 3.5vw, 3rem);
+  }
+
+  .suhome__truths {
+    padding: clamp(5rem, 10vw, 10rem) clamp(1.5rem, 5vw, 6.25rem);
+  }
+
+  .suhome__truths-inner {
+    gap: clamp(1.5rem, 4vw, 3.75rem);
+  }
+
+  .suhome__typewriter-wrap {
+    width: clamp(16rem, 35vw, 31.125rem);
+    height: clamp(23rem, 50vw, 44.625rem);
+  }
+
+  .suhome__typewriter {
+    width: 100%;
+    height: 118%;
+  }
+
+  .suhome__truths-copy {
+    gap: clamp(4rem, 12vw, 18.75rem);
+  }
+
+  .suhome__truths-copy-top h2,
+  .suhome__truths-copy-bottom h2 {
     font-size: clamp(1.75rem, 3.5vw, 3rem);
   }
 }
@@ -1066,6 +1246,21 @@
 
   .suhome__voices-mega {
     display: none;
+  }
+
+  .suhome__truths-inner {
+    flex-direction: column;
+    gap: 2.5rem;
+  }
+
+  .suhome__typewriter-wrap {
+    width: min(18rem, 42vw);
+    height: auto;
+    aspect-ratio: 498 / 714;
+  }
+
+  .suhome__truths-copy {
+    gap: 3rem;
   }
 
   .suhome__footer-inner {
@@ -1254,6 +1449,43 @@
     padding: 2.75rem 1.25rem 3rem;
   }
 
+  .suhome__anon-inner {
+    gap: 1.5rem;
+  }
+
+  .suhome__anon-head {
+    flex-direction: column;
+    gap: 1rem;
+    padding: 0;
+    max-width: 22.5rem;
+  }
+
+  .suhome__anon-copy,
+  .suhome__anon-note {
+    width: 100%;
+    max-width: 22.5rem;
+    text-align: center;
+  }
+
+  .suhome__anon-copy h2 {
+    align-items: center;
+  }
+
+  .suhome__anon-crowd-wrap {
+    aspect-ratio: auto;
+    height: 14rem;
+  }
+
+  .suhome__anon-crowd {
+    position: relative !important;
+    inset: auto !important;
+    top: auto !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    object-position: center bottom;
+  }
+
   .suhome__process-inner {
     gap: 2.5rem;
   }
@@ -1283,18 +1515,8 @@
     gap: 0.85rem;
   }
 
-  .suhome__anon-crowd {
-    position: relative !important;
-    inset: auto !important;
-    width: min(100%, 22rem) !important;
-    height: 14rem !important;
-    object-fit: contain;
-  }
-
   .suhome__process h2,
-  .suhome__step,
-  .suhome__anon-copy,
-  .suhome__anon-note {
+  .suhome__step {
     position: relative;
     top: auto;
     left: auto;
@@ -1313,7 +1535,7 @@
   .suhome__step-num {
     width: 3.25rem;
     height: 3.25rem;
-    border-radius: 50%;
+    border-radius: 9999px !important;
     font-size: 1.5rem;
   }
 
@@ -1335,6 +1557,7 @@
     flex-direction: column;
     align-items: center;
     gap: 1.5rem;
+    padding-left: 0;
   }
 
   .suhome__record-copy,
@@ -1392,67 +1615,51 @@
     white-space: normal;
   }
 
-  .suhome__anon-crowd {
-    order: 3;
-    width: 100% !important;
-    height: 14rem !important;
-    object-fit: cover !important;
-    object-position: center bottom;
-  }
-
   .suhome__truths {
-    display: flex;
-    flex-direction: column;
+    padding: 3rem 1.25rem;
   }
 
-  .suhome__truths-top,
-  .suhome__truths-bottom {
-    display: flex;
+  .suhome__truths-inner {
     flex-direction: column;
+    gap: 2rem;
+  }
+
+  .suhome__typewriter-wrap {
+    order: -1;
+    width: min(14rem, 62vw);
     height: auto;
-    padding: 2.75rem 1.25rem;
+    aspect-ratio: 498 / 714;
   }
 
-  .suhome__truths-top {
-    padding-top: 12rem;
-  }
-
-  .suhome__truths-copy,
-  .suhome__truths-bottom h2,
-  .suhome__count {
-    position: relative;
-    top: auto;
-    left: auto;
+  .suhome__typewriter {
     width: 100%;
-    max-width: 24rem;
+    height: 118%;
   }
 
-  .suhome__truths-copy h2,
-  .suhome__truths-bottom h2 {
-    width: 100%;
+  .suhome__truths-copy {
+    gap: 2.5rem;
+    align-items: center;
+    text-align: center;
+  }
+
+  .suhome__truths-copy-top,
+  .suhome__truths-copy-bottom {
+    align-items: center;
+  }
+
+  .suhome__truths-copy-top h2,
+  .suhome__truths-copy-bottom h2 {
     font-size: 2rem;
-    white-space: normal;
   }
 
   .suhome__count {
     width: fit-content;
-    margin-top: 1rem;
     padding: 0.65rem 0.9rem;
-    border-width: 4px;
     font-size: 1.35rem;
   }
 
   .suhome__count strong {
     font-size: 2.35rem;
-  }
-
-  .suhome__typewriter {
-    top: 0.5rem;
-    left: 50%;
-    width: min(14rem, 62vw);
-    height: auto;
-    transform: translateX(-50%);
-    box-shadow: 0 4px 24px rgb(0 0 0 / 45%);
   }
 
   .suhome__voices {
@@ -1467,13 +1674,9 @@
     padding: 4rem 1rem;
   }
 
-  .suhome__voices-banner h2 {
+  .suhome__voices-copy h2,
+  .suhome__voices-badge {
     font-size: 1.5rem;
-    white-space: normal;
-  }
-
-  .suhome__voices-banner span {
-    font-size: 1.85rem;
     white-space: normal;
   }
 

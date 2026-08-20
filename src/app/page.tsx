@@ -1,339 +1,340 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 
-import { LandingFooter } from "@/components/layout/LandingFooter";
-import { buttonVariants } from "@/components/ui/button";
+import "@/styles/home.css";
 
-import "@/styles/landing.css";
+export const metadata: Metadata = {
+  title: "ShutUni Home | Honest college reviews",
+  description:
+    "When college marketing spins the truth Megaphone. Uncensored student feedback — no paid rankings, no institutional PR.",
+};
 
-export default function Home() {
+export default function HomePage() {
   return (
-    <div className="landing">
-      <section className="landing__hero">
-        <div className="landing__hero-visual">
-          <Image
-            className="landing__hero-collage"
-            src="/lpImage/figma/hero-collage-exact.png"
-            alt="Students exposing overhyped placements, fake facilities, and broken college promises"
-            width={1636}
-            height={961}
-            sizes="(max-width: 700px) 125vw, 971px"
-            preload
-          />
-        </div>
-
-        <div className="landing__hero-heading">
-          <h1 className="landing__headline">
-            Every college has a story they won&apos;t tell. We let
-            <span>Students Talk</span>
-          </h1>
-        </div>
-
-        <div className="landing__hero-details">
-          <div className="landing__hero-side">
+    <div className="suhome-frame">
+      <section className="suhome__hero-fold">
+        <div className="suhome__hero-fold-collage-wrap">
+          <div className="suhome__hero-fold-collage">
             <Image
-              className="landing__hero-hat"
-              src="/lpImage/figma/hero-hat-exact.png"
-              alt=""
-              width={310}
-              height={293}
-              sizes="200px"
+              src="/home/hero-collage.png"
+              alt="Students calling out overhyped placements, fake facilities, and broken promises"
+              width={1636}
+              height={961}
+              sizes="(max-width: 1440px) 100vw, 1440px"
+              preload
             />
           </div>
-          <div className="landing__hero-inner">
-            <p className="landing__support">
-              Institutions lie. Marketing hides the truth. VoiceCheck is the
-              unsponsored, unvarnished public record of what actually happens
-              on campus.
-            </p>
-            <div className="landing__cta-row">
-              <Link href="/review" className={buttonVariants({ size: "lg" })}>
-                Add your Review
+        </div>
+
+        <div className="suhome__hero-fold-copy">
+          <h1>
+            <span className="suhome__hero-fold-line">When college marketing</span>
+            <span className="suhome__hero-fold-line">spins the truth</span>
+            <span className="suhome__hero-fold-accent">
+              STUDENTS SET IT STRAIGHT
+            </span>
+          </h1>
+          <p>
+            Mainstream rankings are rigged, bought, and outdated. So we
+            <br />
+            built a place for real, uncensored student feedback to help
+            <br />
+            future students see the truth.
+          </p>
+          <Link href="/review" className="suhome__btn suhome__btn--orange">
+            Add your Review
+          </Link>
+        </div>
+
+        <div className="suhome__hero-fold-props" aria-hidden="true">
+          <div className="suhome__hero-fold-cap-wrap">
+            <Image
+              className="suhome__hero-fold-cap"
+              src="/home/grad-cap.png"
+              alt=""
+              width={350}
+              height={287}
+              sizes="350px"
+            />
+          </div>
+          <Image
+            className="suhome__hero-fold-mic"
+            src="/home/mic-hand.png"
+            alt=""
+            width={226}
+            height={268}
+            sizes="226px"
+          />
+        </div>
+      </section>
+
+      <div className="suhome">
+        <section className="suhome__pillars" id="pillars">
+          <div className="suhome__pillars-orange" aria-hidden="true">
+            <Image src="/home/pillars-orange.svg" alt="" fill sizes="100vw" />
+          </div>
+
+          <div className="suhome__pillars-inner">
+            <div className="suhome__pillars-head">
+              <p className="suhome__pillars-label">Our Pillars</p>
+              <div className="suhome__pillars-titles">
+                <p>NO PAID RANKINGS</p>
+                <p>No Institutional Influence</p>
+                <p>No Fluff, No PR</p>
+              </div>
+            </div>
+
+            <div className="suhome__pillars-copies">
+              <p>
+                Universities cannot claim, alter, or negotiate student
+                submissions.
+              </p>
+              <span className="suhome__pillars-divider" aria-hidden="true" />
+              <p>
+                Institutions cannot buy visibility, inflate metrics, or scrub
+                genuine critique.
+              </p>
+              <span className="suhome__pillars-divider" aria-hidden="true" />
+              <p>
+                Institutions cannot buy visibility, inflate metrics, or scrub
+                genuine critique.
+              </p>
+            </div>
+          </div>
+
+          <Image
+            className="suhome__pillars-mega"
+            src="/home/mega-side.png"
+            alt=""
+            width={601}
+            height={511}
+            sizes="601px"
+          />
+        </section>
+
+        <section className="suhome__process" id="how">
+          <div className="suhome__process-inner">
+            <h2>How the Process Works</h2>
+
+            <div className="suhome__process-track">
+              <div className="suhome__process-line" aria-hidden="true">
+                <Image
+                  src="/home/process-line.svg"
+                  alt=""
+                  width={3935}
+                  height={311}
+                  sizes="1440px"
+                />
+              </div>
+
+              <div className="suhome__step suhome__step--one">
+                <span className="suhome__step-num">01</span>
+                <p>
+                  Select your
+                  <br />
+                  institution
+                </p>
+              </div>
+
+              <div className="suhome__step suhome__step--two">
+                <span className="suhome__step-num">02</span>
+                <p>
+                  Channel your
+                  <br />
+                  experience
+                </p>
+              </div>
+
+              <div className="suhome__step suhome__step--three">
+                <p>
+                  Verify and
+                  <br />
+                  publish
+                </p>
+                <span className="suhome__step-num">03</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="suhome__record">
+          <Image
+            className="suhome__mic suhome__mic--record"
+            src="/home/mic-hand.png"
+            alt=""
+            width={239}
+            height={283}
+            sizes="239px"
+          />
+
+          <div className="suhome__record-inner">
+            <div className="suhome__record-copy">
+              <h2>
+                Set the record <span>Straight</span>
+              </h2>
+              <p>
+                Share your authentic campus experience and guide the next
+                incoming class.
+              </p>
+              <Link href="/review" className="suhome__btn suhome__btn--white">
+                Start Your Review
               </Link>
             </div>
-          </div>
-          <div className="landing__hero-side">
-            <Image
-              className="landing__hero-hand"
-              src="/lpImage/figma/hero-fist-exact.png"
-              alt=""
-              width={207}
-              height={318}
-              sizes="200px"
-            />
-          </div>
-        </div>
-        <div className="landing__hero-tear" aria-hidden="true">
-          <Image
-            src="/lpImage/figma/hero-tear-exact.png"
-            alt=""
-            fill
-            sizes="111vw"
-          />
-        </div>
-      </section>
 
-      <section className="landing__purpose" id="voice">
-        <h2 className="landing__purpose-title">Our Purpose</h2>
+            <div className="suhome__tablet-wrap">
+              <Image
+                className="suhome__record-cap"
+                src="/home/grad-cap.png"
+                alt=""
+                width={207}
+                height={170}
+                sizes="207px"
+              />
+              <div className="suhome__tablet">
+                <Image
+                  src="/home/tablet.png"
+                  alt="Review form preview"
+                  width={709}
+                  height={532}
+                  sizes="(max-width: 700px) 90vw, 709px"
+                />
+              </div>
+            </div>
+          </div>
+        </section>
 
-        <div className="landing__purpose-burst" aria-hidden="true">
-          <div className="landing__purpose-ray landing__purpose-ray--truth">
-            <Image
-              src="/lpImage/figma/purpose-strip.png"
-              alt=""
-              fill
-              sizes="80vw"
-            />
-            <span>JUST THE TRUTH</span>
+        <section className="suhome__anon">
+          <div className="suhome__anon-inner">
+            <div className="suhome__anon-head">
+              <div className="suhome__anon-copy">
+                <h2>
+                  Your name is optional
+                  <span>Your perspective isn&apos;t.</span>
+                </h2>
+              </div>
+              <p className="suhome__anon-note">
+                Post under your real name or complete anonymity. Your honesty
+                protects the next applicant, not institutional PR.
+              </p>
+            </div>
+            <div className="suhome__anon-crowd-wrap">
+              <Image
+                className="suhome__section-art suhome__anon-crowd"
+                src="/home/crowd.png"
+                alt="A crowd of students, with one voice standing out"
+                width={1723}
+                height={542}
+                sizes="(max-width: 1440px) 100vw, 1440px"
+              />
+            </div>
           </div>
-          <div className="landing__purpose-ray landing__purpose-ray--rankings">
-            <Image
-              src="/lpImage/figma/purpose-strip.png"
-              alt=""
-              fill
-              sizes="85vw"
-            />
-            <span>NO PAID RANKINGS</span>
-          </div>
-          <div className="landing__purpose-ray landing__purpose-ray--brochures">
-            <Image
-              src="/lpImage/figma/purpose-strip.png"
-              alt=""
-              fill
-              sizes="90vw"
-            />
-            <span>NO BROCHURES</span>
-          </div>
-          <div className="landing__purpose-ray landing__purpose-ray--students">
-            <Image
-              src="/lpImage/figma/purpose-strip.png"
-              alt=""
-              fill
-              sizes="100vw"
-            />
-            <span>REAL STUDENTS REAL TALK</span>
-          </div>
-          <Image
-            className="landing__purpose-face"
-            src="/lpImage/figma/purpose-mouth.png"
-            alt=""
-            width={1024}
-            height={682}
-            sizes="(max-width: 700px) 180px, 340px"
-          />
-        </div>
+        </section>
 
-        <p className="landing__purpose-copy">
-          Forget the ranking.
-          <br />
-          Ask the ones who lived it.
-        </p>
-      </section>
+        <section className="suhome__truths">
+          <div className="suhome__truths-inner">
+            <div className="suhome__typewriter-wrap">
+              <Image
+                className="suhome__typewriter"
+                src="/home/typewriter.png"
+                alt="Typed student reviews coming off a typewriter"
+                width={498}
+                height={839}
+                sizes="(max-width: 700px) 90vw, 498px"
+              />
+            </div>
+            <div className="suhome__truths-copy">
+              <div className="suhome__truths-copy-top">
+                <h2>Unfiltered truths. Zero marketing spin.</h2>
+                <p>Real student accounts, published exactly as experienced.</p>
+              </div>
+              <div className="suhome__truths-copy-bottom">
+                <h2>Real feedback recorded</h2>
+                <p className="suhome__count">
+                  <strong>3,102 </strong>
+                  reviews
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
 
-      <section className="landing__community">
-        <Image
-          className="landing__community-top-paper"
-          src="/lpImage/figma/community-top-paper.png"
-          alt=""
-          width={1024}
-          height={120}
-          sizes="100vw"
-        />
-        <h2 className="landing__community-title">Join the Community</h2>
-        <div className="landing__community-panel">
-          <Image
-            src="/lpImage/figma/community-dark-paper.png"
-            alt=""
-            fill
-            sizes="100vw"
-          />
-          <div className="landing__community-content">
-            <p>
-              Every review, every rant, every real story it all
-              <br />
-              adds up. Be part of the hundred.
-            </p>
+        <section className="suhome__voices" aria-labelledby="suhome-voices-heading">
+          <div className="suhome__voices-inner">
+            <div className="suhome__voices-banner">
+              <div className="suhome__voices-tear" aria-hidden="true">
+                <Image
+                  src="/home/torn-cta.png"
+                  alt=""
+                  width={1254}
+                  height={1254}
+                  sizes="1200px"
+                />
+              </div>
+              <div className="suhome__voices-copy">
+                <h2 id="suhome-voices-heading">3,000 voices and counting.</h2>
+                <p className="suhome__voices-badge">Yours is next</p>
+              </div>
+            </div>
+
             <Link
               href="/review"
-              className={buttonVariants({ size: "lg" })}
+              className="suhome__btn suhome__btn--orange suhome__btn--light-shadow"
             >
-              Add your Review
+              Submit your review
             </Link>
-          </div>
-        </div>
-        <div className="landing__community-hands-wrap">
-          <Image
-            className="landing__community-hands"
-            src="/lpImage/figma/community-hands-exact.png"
-            alt=""
-            width={1200}
-            height={422}
-            sizes="(max-width: 700px) 140vw, 1200px"
-          />
-        </div>
-        <Image
-          className="landing__community-roll"
-          src="/lpImage/figma/community-roll.png"
-          alt=""
-          width={198}
-          height={260}
-          sizes="198px"
-        />
-      </section>
 
-      <section className="landing__process" id="how">
-        <h2>How the Process Works</h2>
-        <Image
-          className="landing__process-rope"
-          src="/lpImage/figma/process-rope.png"
-          alt=""
-          width={1024}
-          height={162}
-          sizes="100vw"
-        />
-        <div className="landing__process-cards">
-          <article className="landing__process-card landing__process-card--first">
             <Image
-              src="/lpImage/figma/process-orange-card.png"
+              className="suhome__voices-mega suhome__voices-mega--left"
+              src="/home/voices-mega.png"
               alt=""
-              fill
-              sizes="(max-width: 700px) 260px, 24vw"
+              width={270}
+              height={255}
+              sizes="270px"
             />
-            <div>
-              <h3>Skip the 5-star theatre.</h3>
-              <p>
-                Tell us what actually happened the good, the bad, the boring
-                parts nobody mentions.
-              </p>
-            </div>
-          </article>
-          <article className="landing__process-card landing__process-card--second">
             <Image
-              src="/lpImage/figma/process-dark-card.png"
+              className="suhome__voices-mega suhome__voices-mega--right"
+              src="/home/voices-mega.png"
               alt=""
-              fill
-              sizes="(max-width: 700px) 260px, 24vw"
+              width={280}
+              height={268}
+              sizes="280px"
             />
-            <div>
-              <h3>Anonymous if you want.</h3>
-              <p>
-                Your name is optional. Your account isn&apos;t your identity.
-                What&apos;s not optional is telling it straight.
-              </p>
-            </div>
-          </article>
-          <article className="landing__process-card landing__process-card--third">
-            <Image
-              src="/lpImage/figma/process-orange-card.png"
-              alt=""
-              fill
-              sizes="(max-width: 700px) 260px, 24vw"
-            />
-            <div>
-              <h3>We don&apos;t trickle. We arrive.</h3>
-              <p>
-                No soft launch, no slow drip of three reviews a week. We hit our
-                number, and every voice goes live together.
-              </p>
-            </div>
-          </article>
-        </div>
-        <div className="landing__process-tear" aria-hidden="true" />
-      </section>
+          </div>
+        </section>
 
-      <section className="landing__voices">
-        <div
-          className="landing__voices-tear landing__voices-tear--top"
-          aria-hidden="true"
-        />
-        <div className="landing__voices-copy">
-          <h2>3,000 voices and counting.</h2>
-          <p>Yours is next</p>
-        </div>
-        <Link
-          href="/review"
-          className={`landing__voices-cta ${buttonVariants({ size: "lg" })}`}
-        >
-          Add your Review
-        </Link>
-        <div className="landing__voices-face landing__voices-face--left">
-          <div className="landing__voices-face-crop">
-            <Image
-              src="/lpImage/figma/voices-mouth.png"
-              alt=""
-              width={1536}
-              height={1024}
-              sizes="260px"
-            />
-          </div>
-        </div>
-        <div className="landing__voices-face landing__voices-face--right">
-          <div className="landing__voices-face-crop">
-            <Image
-              src="/lpImage/figma/voices-mouth.png"
-              alt=""
-              width={1536}
-              height={1024}
-              sizes="260px"
-            />
-          </div>
-        </div>
-        <div
-          className="landing__voices-tear landing__voices-tear--bottom"
-          aria-hidden="true"
-        />
-        <Image
-          className="landing__voices-crowd"
-          src="/lpImage/figma/voices-crowd-exact.png"
-          alt=""
-          width={1774}
-          height={887}
-          sizes="100vw"
-        />
-      </section>
-
-      <section className="landing__invite">
-        <div className="landing__invite-inner">
-          <div className="landing__invite-warning">
-            <Image
-              src="/lpImage/figma/invite-warning-paper.png"
-              alt=""
-              fill
-              sizes="(max-width: 700px) 110vw, 930px"
-            />
-            <h2>
-              One voice is a rant.
-              <br />
-              A hundred is a warning
-            </h2>
-          </div>
-          <div className="landing__invite-row">
-            <Image
-              className="landing__invite-megaphone landing__invite-megaphone--left"
-              src="/lpImage/figma/megaphone.png"
-              alt=""
-              width={1024}
-              height={900}
-              sizes="277px"
-            />
-            <div className="landing__invite-content">
-              <p>Copy below the Invite Link and Share it with your friends</p>
-              <button type="button">Share</button>
+        <footer className="suhome__footer">
+          <div className="suhome__footer-inner">
+            <div className="suhome__footer-copy">
+              <h2 className="suhome__footer-title">
+                Unbiased Reviews. <span>Honest Decisions.</span>
+              </h2>
+              <div className="suhome__footer-line" aria-hidden="true" />
+              <div className="suhome__footer-meta">
+                <nav className="suhome__footer-nav" aria-label="Footer">
+                  <Link href="#how">How it works</Link>
+                  <Link href="#pillars">Purpose</Link>
+                  <Link href="/review">Submit a Review</Link>
+                  <Link href="/privacy">Privacy</Link>
+                  <Link href="/terms">Terms &amp; Conditions</Link>
+                </nav>
+                <p className="suhome__footer-legal">
+                  © 2026 CampusJanta. By the students. For the students.
+                </p>
+              </div>
             </div>
-            <Image
-              className="landing__invite-megaphone landing__invite-megaphone--right"
-              src="/lpImage/figma/megaphone.png"
-              alt=""
-              width={1024}
-              height={900}
-              sizes="275px"
-            />
+            <div className="suhome__footer-keyboard">
+              <Image
+                src="/home/footer-keyboard.png"
+                alt=""
+                width={471}
+                height={471}
+                sizes="471px"
+              />
+            </div>
           </div>
-        </div>
-        <div className="landing__invite-tear" aria-hidden="true" />
-      </section>
-
-      <LandingFooter />
+        </footer>
+      </div>
     </div>
   );
 }

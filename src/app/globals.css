@@ -131,6 +131,12 @@
     border-radius: 0 !important;
   }
 
+  /* Opt out of the global sharp-corner reset where rounding is intentional */
+  .suhome__process .suhome__step-num,
+  span.suhome__step-num {
+    border-radius: 9999px !important;
+  }
+
   html {
     @apply font-sans antialiased;
     font-family: var(--font-family-sans);
