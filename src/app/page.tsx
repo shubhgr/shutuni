@@ -119,13 +119,28 @@ export default function HomePage() {
             <h2>How the Process Works</h2>
 
             <div className="suhome__process-track">
-              <div className="suhome__process-line" aria-hidden="true">
+              <div
+                className="suhome__process-line suhome__process-line--desktop"
+                aria-hidden="true"
+              >
                 <Image
                   src="/home/process-line.svg"
                   alt=""
                   width={3935}
                   height={381}
                   sizes="1440px"
+                />
+              </div>
+              <div
+                className="suhome__process-line suhome__process-line--mobile"
+                aria-hidden="true"
+              >
+                <Image
+                  src="/home/process-line-mobile.svg"
+                  alt=""
+                  width={754}
+                  height={203}
+                  sizes="200px"
                 />
               </div>
 
