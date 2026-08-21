@@ -21,7 +21,7 @@ export async function POST(request: Request) {
       { status: 400 }
     );
   }
-  if (!body.oneLiner.trim() || !body.overallSentiment || !body.recommend) {
+  if (!body.overallSentiment || !body.recommend) {
     return NextResponse.json(
       { error: "Review content is incomplete" },
       { status: 400 }

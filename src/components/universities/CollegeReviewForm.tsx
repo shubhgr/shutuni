@@ -225,7 +225,7 @@ export function CollegeReviewForm({
   const [status, setStatus] = useState("");
   const [reviewerRelation, setReviewerRelation] = useState("");
   const [reviewerRelationOther, setReviewerRelationOther] = useState("");
-  const [fullyAnonymous, setFullyAnonymous] = useState(true);
+  const [fullyAnonymous, setFullyAnonymous] = useState(false);
 
   const [activeCategory, setActiveCategory] = useState<CategoryId | null>(null);
   const [categoryDrafts, setCategoryDrafts] = useState<
@@ -273,8 +273,6 @@ export function CollegeReviewForm({
   const draft = activeCategory
     ? categoryDrafts[activeCategory]
     : emptyDraft();
-  const prosWords = wordCount(draft.pros);
-  const consWords = wordCount(draft.cons);
 
   function isCategoryChecked(id: CategoryId): boolean {
     const d = categoryDrafts[id];
@@ -322,7 +320,7 @@ export function CollegeReviewForm({
     setStatus("");
     setReviewerRelation("");
     setReviewerRelationOther("");
-    setFullyAnonymous(true);
+    setFullyAnonymous(false);
     setActiveCategory(null);
     setCategoryDrafts(
       Object.fromEntries(
@@ -371,10 +369,6 @@ export function CollegeReviewForm({
   }
 
   function validateStep2(): boolean {
-    if (!oneLiner.trim()) {
-      toast.error("Please write a short overall review.");
-      return false;
-    }
     if (!overallSentiment) {
       toast.error("Please describe your overall experience.");
       return false;
@@ -459,6 +453,7 @@ export function CollegeReviewForm({
   }
 
   return (
+    <>
     <form
       className="college-review-form"
       onSubmit={(e) => {
@@ -757,6 +752,7 @@ export function CollegeReviewForm({
                 className="college-review-form__question"
               >
                 Write a short overall review
+                <span className="college-review-form__optional"> (optional)</span>
               </Label>
               <Textarea
                 id="one-liner"
@@ -854,9 +850,6 @@ export function CollegeReviewForm({
                       onChange={(e) => updateDraft({ pros: e.target.value })}
                       rows={4}
                     />
-                    <span className="review-wordbox__count" aria-live="polite">
-                      {prosWords} {prosWords === 1 ? "word" : "words"}
-                    </span>
                   </div>
                 </div>
 
@@ -873,9 +866,6 @@ export function CollegeReviewForm({
                       onChange={(e) => updateDraft({ cons: e.target.value })}
                       rows={4}
                     />
-                    <span className="review-wordbox__count" aria-live="polite">
-                      {consWords} {consWords === 1 ? "word" : "words"}
-                    </span>
                   </div>
                 </div>
               </section>
@@ -933,7 +923,7 @@ export function CollegeReviewForm({
           Continue
         </Button>
       </div>
-
+    </form>
       <Dialog
         open={showVerifyFlow}
         onOpenChange={(open) => {
@@ -961,6 +951,6 @@ export function CollegeReviewForm({
           ) : null}
         </DialogContent>
       </Dialog>
-    </form>
+    </>
   );
 }

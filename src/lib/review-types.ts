@@ -15,6 +15,7 @@ export type ReviewCategoryDraft = {
 
 export type ReviewVerificationMethod =
   | "email"
+  | "google"
   | "document"
   | "skipped"
   | "linkedin";

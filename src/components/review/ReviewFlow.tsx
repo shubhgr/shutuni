@@ -91,6 +91,17 @@ export function ReviewFlow() {
   const requestId = useRef(0);
   const loadingMoreRef = useRef(false);
 
+  useEffect(() => {
+    void fetch("/api/auth/linkedin/session", {
+      method: "DELETE",
+      credentials: "same-origin",
+    });
+    void fetch("/api/auth/google/session", {
+      method: "DELETE",
+      credentials: "same-origin",
+    });
+  }, []);
+
   const isSearchQuery = query.trim().length >= 1;
   const showIntro = !selected && !isSearchQuery && !introDismissed;
 

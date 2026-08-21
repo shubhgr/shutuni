@@ -4,7 +4,15 @@ import { cookies } from "next/headers";
 
 import { ensureReviewSchema, getSql, newId } from "@/lib/db";
 import {
-  decodeSession,
+  decodeSession as decodeEmailSession,
+  EMAIL_OTP_SESSION_COOKIE,
+} from "@/lib/brevo-otp";
+import {
+  decodeSession as decodeGoogleSession,
+  GOOGLE_SESSION_COOKIE,
+} from "@/lib/google-oauth";
+import {
+  decodeSession as decodeLinkedInSession,
   LINKEDIN_SESSION_COOKIE,
 } from "@/lib/linkedin-oauth";
 import type { ReviewSubmitPayload } from "@/lib/review-types";
@@ -21,7 +29,19 @@ export async function saveReview(
   const sql = getSql();
 
   const jar = await cookies();
-  const linkedin = decodeSession(jar.get(LINKEDIN_SESSION_COOKIE)?.value);
+  const linkedin = decodeLinkedInSession(
+    jar.get(LINKEDIN_SESSION_COOKIE)?.value
+  );
+  const google = decodeGoogleSession(jar.get(GOOGLE_SESSION_COOKIE)?.value);
+  const emailOtp = decodeEmailSession(
+    jar.get(EMAIL_OTP_SESSION_COOKIE)?.value
+  );
+  const accountEmail =
+    payload.verification.collegeEmail?.trim() ||
+    emailOtp?.email ||
+    linkedin?.email ||
+    google?.email ||
+    null;
 
   let reviewerId: string | null = null;
 
@@ -35,7 +55,7 @@ export async function saveReview(
         UPDATE reviewers
         SET
           display_name = ${payload.verification.displayName.trim()},
-          email = ${linkedin.email ?? null},
+          email = ${accountEmail},
           updated_at = NOW()
         WHERE id = ${reviewerId}
       `;
@@ -47,13 +67,16 @@ export async function saveReview(
           ${reviewerId},
           ${linkedin.sub},
           ${payload.verification.displayName.trim()},
-          ${linkedin.email ?? null}
+          ${accountEmail}
         )
       `;
     }
   }
 
   const reviewId = newId();
+  const moderationStatus =
+    payload.verification.method === "skipped" ? "unverified" : "pending";
+
   await sql`
     INSERT INTO reviews (
       id,
@@ -103,14 +126,14 @@ export async function saveReview(
       ${payload.recommendReason?.trim() || null},
       CAST(${JSON.stringify(payload.categories)} AS jsonb),
       ${payload.verification.method},
-      ${payload.verification.collegeEmail?.trim() || null},
+      ${payload.verification.collegeEmail?.trim() || accountEmail},
       ${payload.verification.documentType || null},
       ${payload.verification.documentFilename || null},
       ${payload.verification.documentSize ?? null},
       ${payload.verification.displayName.trim()},
       ${linkedin?.sub ?? null},
-      ${linkedin?.email ?? null},
-      ${"pending"}
+      ${linkedin?.email ?? google?.email ?? emailOtp?.email ?? null},
+      ${moderationStatus}
     )
   `;
 
