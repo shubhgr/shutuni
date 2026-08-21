@@ -14,6 +14,7 @@ const stackSansHeadline = Stack_Sans_Headline({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://verdicted.org"),
   title: {
     default: "VerdictED",
     template: "%s | VerdictED",
@@ -22,13 +23,15 @@ export const metadata: Metadata = {
     "Honest college reviews from students — speak freely, without judgment.",
   applicationName: "VerdictED",
   openGraph: {
+    type: "website",
+    url: "https://verdicted.org",
     siteName: "VerdictED",
     title: "VerdictED",
     description:
       "Honest college reviews from students — speak freely, without judgment.",
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title: "VerdictED",
     description:
       "Honest college reviews from students — speak freely, without judgment.",

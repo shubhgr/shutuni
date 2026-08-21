@@ -5,9 +5,22 @@ import Link from "next/link";
 import "@/styles/home.css";
 
 export const metadata: Metadata = {
-  title: "Honest college reviews",
+  title: {
+    absolute: "VerdictED",
+  },
   description:
     "When college marketing spins the truth Megaphone. Uncensored student feedback — no paid rankings, no institutional PR.",
+  openGraph: {
+    title: "VerdictED",
+    description:
+      "Uncensored student feedback — no paid rankings, no institutional PR.",
+    url: "https://verdicted.org",
+  },
+  twitter: {
+    title: "VerdictED",
+    description:
+      "Uncensored student feedback — no paid rankings, no institutional PR.",
+  },
 };
 
 export default function HomePage() {
