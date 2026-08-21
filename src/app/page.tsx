@@ -73,8 +73,39 @@ export default function HomePage() {
       <div className="suhome">
         <section className="suhome__pillars" id="pillars">
           <div className="suhome__pillars-orange" aria-hidden="true">
-            <Image src="/home/pillars-orange.svg" alt="" fill sizes="100vw" />
+            <Image
+              className="suhome__pillars-orange-desktop"
+              src="/home/pillars-orange.svg"
+              alt=""
+              fill
+              sizes="100vw"
+            />
+            <Image
+              className="suhome__pillars-orange-mobile"
+              src="/home/pillars-orange-mobile.svg"
+              alt=""
+              width={1034}
+              height={623}
+              sizes="100vw"
+            />
           </div>
+
+          <Image
+            className="suhome__pillars-mega suhome__pillars-mega--desktop"
+            src="/home/mega-side.png"
+            alt=""
+            width={601}
+            height={511}
+            sizes="601px"
+          />
+          <Image
+            className="suhome__pillars-mega suhome__pillars-mega--mobile"
+            src="/home/pillars-mega-mobile.png"
+            alt=""
+            width={230}
+            height={209}
+            sizes="230px"
+          />
 
           <div className="suhome__pillars-inner">
             <div className="suhome__pillars-head">
@@ -103,20 +134,15 @@ export default function HomePage() {
               </p>
             </div>
           </div>
-
-          <Image
-            className="suhome__pillars-mega"
-            src="/home/mega-side.png"
-            alt=""
-            width={601}
-            height={511}
-            sizes="601px"
-          />
         </section>
 
         <section className="suhome__process" id="how">
           <div className="suhome__process-inner">
-            <h2>How the Process Works</h2>
+            <h2>
+              How the Process
+              <br />
+              works
+            </h2>
 
             <div className="suhome__process-track">
               <div
@@ -187,7 +213,8 @@ export default function HomePage() {
           <div className="suhome__record-inner">
             <div className="suhome__record-copy">
               <h2>
-                Set the record <span>Straight</span>
+                Set the record
+                <span>Straight</span>
               </h2>
               <p>
                 Share your authentic campus experience and guide the next
@@ -239,9 +266,9 @@ export default function HomePage() {
                 className="suhome__section-art suhome__anon-crowd"
                 src="/home/crowd.png"
                 alt="A crowd of students, with one voice standing out"
-                width={1723}
-                height={542}
-                sizes="(max-width: 1440px) 100vw, 1440px"
+                fill
+                sizes="100vw"
+                quality={90}
               />
             </div>
           </div>
@@ -293,29 +320,31 @@ export default function HomePage() {
               </div>
             </div>
 
+            <div className="suhome__voices-megas" aria-hidden="true">
+              <Image
+                className="suhome__voices-mega suhome__voices-mega--left"
+                src="/home/voices-mega.png"
+                alt=""
+                width={226}
+                height={178}
+                sizes="226px"
+              />
+              <Image
+                className="suhome__voices-mega suhome__voices-mega--right"
+                src="/home/voices-mega.png"
+                alt=""
+                width={239}
+                height={178}
+                sizes="239px"
+              />
+            </div>
+
             <Link
               href="/review"
               className="suhome__btn suhome__btn--orange suhome__btn--light-shadow"
             >
               Submit your review
             </Link>
-
-            <Image
-              className="suhome__voices-mega suhome__voices-mega--left"
-              src="/home/voices-mega.png"
-              alt=""
-              width={270}
-              height={255}
-              sizes="270px"
-            />
-            <Image
-              className="suhome__voices-mega suhome__voices-mega--right"
-              src="/home/voices-mega.png"
-              alt=""
-              width={280}
-              height={268}
-              sizes="280px"
-            />
           </div>
         </section>
 
