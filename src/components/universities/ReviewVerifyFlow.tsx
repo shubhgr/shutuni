@@ -70,6 +70,74 @@ export function ReviewVerifyFlow({
     return () => window.clearInterval(timer);
   }, [resendCooldown]);
 
+  useEffect(() => {
+    let cancelled = false;
+
+    async function hydrateLinkedInSession() {
+      try {
+        const res = await fetch("/api/auth/linkedin/session", {
+          credentials: "same-origin",
+        });
+        if (!res.ok || cancelled) return;
+        const data = (await res.json()) as {
+          connected?: boolean;
+          name?: string;
+        };
+        if (!data.connected || cancelled) return;
+        setLinkedinConnected(true);
+        if (data.name?.trim()) {
+          setDisplayName((current) => current.trim() || data.name!.trim());
+        }
+      } catch {
+        /* no session yet */
+      }
+    }
+
+    void hydrateLinkedInSession();
+
+    function onMessage(event: MessageEvent) {
+      if (event.origin !== window.location.origin) return;
+      const data = event.data as {
+        type?: string;
+        ok?: boolean;
+        message?: string;
+      };
+      if (data?.type !== "linkedin-auth") return;
+      setBusy(false);
+      if (!data.ok) {
+        toast.error(data.message || "LinkedIn connection failed.");
+        return;
+      }
+      void (async () => {
+        try {
+          const res = await fetch("/api/auth/linkedin/session", {
+            credentials: "same-origin",
+          });
+          if (!res.ok) {
+            toast.error("LinkedIn connected, but we could not load your profile.");
+            return;
+          }
+          const session = (await res.json()) as {
+            name?: string;
+          };
+          setLinkedinConnected(true);
+          if (session.name?.trim()) {
+            setDisplayName(session.name.trim());
+          }
+          toast.success("LinkedIn verified");
+        } catch {
+          toast.error("LinkedIn connected, but we could not load your profile.");
+        }
+      })();
+    }
+
+    window.addEventListener("message", onMessage);
+    return () => {
+      cancelled = true;
+      window.removeEventListener("message", onMessage);
+    };
+  }, []);
+
   function finish() {
     setStep("done");
     window.setTimeout(() => {
@@ -96,10 +164,25 @@ export function ReviewVerifyFlow({
 
   function handleConnectLinkedin() {
     setBusy(true);
-    window.setTimeout(() => {
-      setLinkedinConnected(true);
+    const width = 600;
+    const height = 700;
+    const left = Math.max(0, Math.round(window.screenX + (window.outerWidth - width) / 2));
+    const top = Math.max(0, Math.round(window.screenY + (window.outerHeight - height) / 2));
+    const popup = window.open(
+      "/api/auth/linkedin",
+      "linkedin-oauth",
+      `width=${width},height=${height},left=${left},top=${top},popup=yes`
+    );
+    if (!popup) {
       setBusy(false);
-      toast.success("LinkedIn verified (demo)");
+      toast.error("Allow popups for this site to connect LinkedIn.");
+      return;
+    }
+    const timer = window.setInterval(() => {
+      if (popup.closed) {
+        window.clearInterval(timer);
+        setBusy(false);
+      }
     }, 500);
   }
 
@@ -155,7 +238,9 @@ export function ReviewVerifyFlow({
   };
 
   const stepHint: Record<VerifyStep, string> = {
-    identity: `Confirm who you are so we can keep spam out of ${institutionName}.`,
+    identity: fullyAnonymous
+      ? "We won’t share your name or any personal details on the platform or with other users. This is only to confirm you’re real and that your review isn’t spam."
+      : `Confirm who you are so we can keep spam out of ${institutionName}.`,
     method:
       "Choose college email or a document to prove affiliation. You can also skip for now.",
     email:

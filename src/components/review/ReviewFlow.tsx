@@ -338,30 +338,53 @@ export function ReviewFlow() {
       </div>
 
       <div className="review-flow__search">
-        <div className="review-flow__search-bar">
-          <Search className="review-flow__search-icon" aria-hidden />
-          <input
-            id={searchId}
-            className="review-flow__search-input"
-            type="search"
-            placeholder="College name, city, or abbreviation…"
-            value={query}
-            onChange={(e) => handleQueryChange(e.target.value)}
-            autoComplete="off"
-            autoFocus
-            aria-label="Search college"
-          />
-          {query && (
+        {selected ? (
+          <div
+            className="review-flow__selected"
+            aria-label={`Selected college: ${selected.name}`}
+          >
+            <div className="review-flow__selected-main">
+              <span className="review-flow__selected-name">{selected.name}</span>
+              <span className="review-flow__selected-location">
+                <MapPin aria-hidden />
+                {formatLocation(selected)}
+              </span>
+            </div>
             <button
               type="button"
               className="review-flow__search-clear"
               onClick={clearSearch}
-              aria-label="Clear search"
+              aria-label="Change college"
             >
               <X aria-hidden />
             </button>
-          )}
-        </div>
+          </div>
+        ) : (
+          <div className="review-flow__search-bar">
+            <Search className="review-flow__search-icon" aria-hidden />
+            <input
+              id={searchId}
+              className="review-flow__search-input"
+              type="search"
+              placeholder="College name, city, or abbreviation…"
+              value={query}
+              onChange={(e) => handleQueryChange(e.target.value)}
+              autoComplete="off"
+              autoFocus
+              aria-label="Search college"
+            />
+            {query && (
+              <button
+                type="button"
+                className="review-flow__search-clear"
+                onClick={clearSearch}
+                aria-label="Clear search"
+              >
+                <X aria-hidden />
+              </button>
+            )}
+          </div>
+        )}
         <p
           className={`review-flow__search-meta${showCountMeta ? " review-flow__search-meta--live" : ""}`}
           aria-live="polite"
@@ -376,16 +399,9 @@ export function ReviewFlow() {
           className="review-flow__form-panel"
           aria-label={`Review ${selected.name}`}
         >
-          <div className="review-flow__form-header">
-            <h2 className="review-flow__form-title">{selected.name}</h2>
-            <p className="review-flow__form-location">
-              <MapPin aria-hidden />
-              {formatLocation(selected)}
-            </p>
-          </div>
           <CollegeReviewForm
             institutionName={selected.name}
-            onChangeCollege={() => setSelected(null)}
+            onChangeCollege={clearSearch}
           />
         </section>
       )}
