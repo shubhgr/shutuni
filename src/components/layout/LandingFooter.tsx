@@ -28,7 +28,7 @@ export function LandingFooter() {
               <Link href="/privacy">Privacy</Link>
             </nav>
             <p className="landing__footer-legal">
-              © 2026 CampusJanta. By the students. For the students.
+              © 2026 VerdictED. By the students. For the students.
             </p>
           </div>
         </div>

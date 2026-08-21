@@ -14,8 +14,25 @@ const stackSansHeadline = Stack_Sans_Headline({
 });
 
 export const metadata: Metadata = {
-  title: "College Review",
-  description: "Honest college reviews from students — speak freely, without judgment.",
+  title: {
+    default: "VerdictED",
+    template: "%s | VerdictED",
+  },
+  description:
+    "Honest college reviews from students — speak freely, without judgment.",
+  applicationName: "VerdictED",
+  openGraph: {
+    siteName: "VerdictED",
+    title: "VerdictED",
+    description:
+      "Honest college reviews from students — speak freely, without judgment.",
+  },
+  twitter: {
+    card: "summary",
+    title: "VerdictED",
+    description:
+      "Honest college reviews from students — speak freely, without judgment.",
+  },
 };
 
 export default function RootLayout({

@@ -1,7 +1,6 @@
 "use client";
 
-import { useId, useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { useState } from "react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -29,7 +28,6 @@ import {
   DialogDescription,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { StarRating } from "@/components/universities/StarRating";
 import { ReviewVerifyFlow } from "@/components/universities/ReviewVerifyFlow";
 import {
   DEGREE_LEVELS,
@@ -41,325 +39,72 @@ import {
 import "@/styles/university-detail.css";
 
 type TileOption = { value: string; label: string };
-type SelectOption = { value: string; label: string };
+type WizardStep = 1 | 2 | 3 | 4;
 
-type FieldDef = {
-  id: string;
-  type: "number" | "text";
-  label: string;
-  placeholder?: string;
-  step?: string;
-  suffix?: string;
+type CategoryId =
+  | "academics"
+  | "faculty"
+  | "infrastructure"
+  | "placements"
+  | "campusLife"
+  | "administration"
+  | "hostelFees";
+
+type CategoryDraft = {
+  sentiment: string;
+  pros: string;
+  cons: string;
 };
 
-type DetailQuestion =
-  | { id: string; type: "rating"; label: string }
-  | {
-      id: string;
-      type: "tiles";
-      label: string;
-      required?: boolean;
-      columns?: 2 | 3;
-      options: TileOption[];
-    }
-  | {
-      id: string;
-      type: "select";
-      label: string;
-      placeholder?: string;
-      options: SelectOption[];
-    }
-  | { id: string; type: "row"; fields: FieldDef[] }
-  | {
-      id: string;
-      type: "conditional-row";
-      when: { questionId: string; equals: string };
-      fields: FieldDef[];
-    }
-  | {
-      id: string;
-      type: "conditional-text";
-      when: { questionId: string; equals: string };
-      label: string;
-      placeholder?: string;
-      rows?: number;
-    };
-
-type Criterion = {
-  id: string;
-  label: string;
-  detailQuestions?: DetailQuestion[];
-};
-
-/**
- * Advanced review v2 — categories expand inline.
- * Add fields to `detailQuestions` (rating | tiles | select | row | conditional-*).
- */
-const CRITERIA: Criterion[] = [
-  {
-    id: "academics",
-    label: "Academics",
-    detailQuestions: [
-      { id: "teaching", type: "rating", label: "Teaching quality" },
-      {
-        id: "curriculum",
-        type: "rating",
-        label: "Curriculum quality & relevance",
-      },
-      {
-        id: "examFairness",
-        type: "rating",
-        label: "Exam & evaluation fairness",
-      },
-      {
-        id: "industryExposure",
-        type: "rating",
-        label: "Industry-relevant projects/exposure",
-      },
-    ],
-  },
-  {
-    id: "faculty",
-    label: "Faculty",
-    detailQuestions: [
-      {
-        id: "expertise",
-        type: "rating",
-        label: "Faculty subject expertise",
-      },
-      {
-        id: "mentorship",
-        type: "rating",
-        label: "Approachability & mentorship",
-      },
-      {
-        id: "classSize",
-        type: "select",
-        label: "Faculty-student ratio (felt)",
-        placeholder: "Select class size",
-        options: [
-          { value: "small", label: "Small classes" },
-          { value: "medium", label: "Medium classes" },
-          { value: "large", label: "Large classes" },
-        ],
-      },
-    ],
-  },
-  {
-    id: "placements",
-    label: "Placements",
-    detailQuestions: [
-      { id: "onCampus", type: "rating", label: "On-campus placement support" },
-      {
-        id: "training",
-        type: "rating",
-        label: "Training & prep (aptitude, mock interviews)",
-      },
-      { id: "internships", type: "rating", label: "Internship opportunities" },
-      {
-        id: "higherStudies",
-        type: "rating",
-        label: "Higher studies support (GATE/GRE/research)",
-      },
-      {
-        id: "wasPlaced",
-        type: "tiles",
-        label: "Were you placed?",
-        required: true,
-        columns: 3,
-        options: [
-          { value: "yes", label: "Yes" },
-          { value: "no", label: "No" },
-          { value: "na", label: "Still studying" },
-        ],
-      },
-      {
-        id: "batchStats",
-        type: "row",
-        fields: [
-          {
-            id: "batchPlacedCount",
-            type: "number",
-            label: "Batch placed",
-            placeholder: "e.g. 85",
-          },
-          {
-            id: "batchSize",
-            type: "number",
-            label: "Batch size",
-            placeholder: "e.g. 120",
-          },
-        ],
-      },
-      {
-        id: "packageStats",
-        type: "row",
-        fields: [
-          {
-            id: "avgPackageCtc",
-            type: "number",
-            label: "Average package (CTC)",
-            placeholder: "e.g. 8.5",
-            step: "0.1",
-            suffix: "LPA",
-          },
-          {
-            id: "highestPackageCtc",
-            type: "number",
-            label: "Highest package (CTC)",
-            placeholder: "e.g. 42",
-            step: "0.1",
-            suffix: "LPA",
-          },
-        ],
-      },
-    ],
-  },
-  {
-    id: "infrastructure",
-    label: "Infrastructure",
-    detailQuestions: [
-      { id: "labs", type: "rating", label: "Labs & classrooms" },
-      { id: "hostel", type: "rating", label: "Hostel & campus buildings" },
-      { id: "library", type: "rating", label: "Library & study spaces" },
-      { id: "wifi", type: "rating", label: "Wifi & internet connectivity" },
-      { id: "mess", type: "rating", label: "Mess/food quality" },
-      {
-        id: "sports",
-        type: "rating",
-        label: "Sports & recreational facilities",
-      },
-    ],
-  },
-  {
-    id: "campusCulture",
-    label: "Campus Culture",
-    detailQuestions: [
-      {
-        id: "clubs",
-        type: "rating",
-        label: "Clubs, fests & extracurriculars",
-      },
-      { id: "diversity", type: "rating", label: "Diversity & inclusiveness" },
-      {
-        id: "peerCommunity",
-        type: "rating",
-        label: "Peer community / student relationships",
-      },
-    ],
-  },
-  {
-    id: "safety",
-    label: "Safety & Security",
-    detailQuestions: [
-      {
-        id: "campusSafety",
-        type: "rating",
-        label: "General campus safety & security",
-      },
-      {
-        id: "ragging",
-        type: "tiles",
-        label: "Ragging/hazing — did you experience or witness it?",
-        columns: 3,
-        options: [
-          { value: "yes", label: "Yes" },
-          { value: "no", label: "No" },
-          { value: "preferNot", label: "Prefer not to say" },
-        ],
-      },
-      {
-        id: "raggingDescription",
-        type: "conditional-text",
-        when: { questionId: "ragging", equals: "yes" },
-        label: "Brief description (optional)",
-        placeholder: "Share only what you are comfortable sharing.",
-        rows: 3,
-      },
-    ],
-  },
-  {
-    id: "studentSupport",
-    label: "Student Support",
-    detailQuestions: [
-      {
-        id: "mentalHealth",
-        type: "rating",
-        label: "Mental health / counseling support",
-      },
-      {
-        id: "adminResponsiveness",
-        type: "rating",
-        label: "Admin/management responsiveness",
-      },
-      {
-        id: "grievance",
-        type: "rating",
-        label: "Grievance redressal process",
-      },
-    ],
-  },
-  {
-    id: "valueForMoney",
-    label: "Value for Money",
-    detailQuestions: [
-      { id: "feesVsQuality", type: "rating", label: "Fees vs. quality received" },
-      {
-        id: "scholarships",
-        type: "tiles",
-        label: "Scholarships / financial aid availability",
-        columns: 3,
-        options: [
-          { value: "yes", label: "Yes" },
-          { value: "no", label: "No" },
-          { value: "unsure", label: "Not sure" },
-        ],
-      },
-    ],
-  },
+const CATEGORIES: { id: CategoryId; label: string }[] = [
+  { id: "academics", label: "Academics" },
+  { id: "faculty", label: "Faculty" },
+  { id: "infrastructure", label: "Infrastructure" },
+  { id: "placements", label: "Placements" },
+  { id: "campusLife", label: "Campus Life" },
+  { id: "administration", label: "Administration" },
+  { id: "hostelFees", label: "Hostel & Fees" },
 ];
 
-type CriteriaId = (typeof CRITERIA)[number]["id"];
-type ReviewMode = "quick" | "advanced";
+const SENTIMENT_OPTIONS: TileOption[] = [
+  { value: "impressed", label: "Genuinely impressed" },
+  { value: "prettyGood", label: "Pretty good" },
+  { value: "okay", label: "It was okay" },
+  { value: "fellShort", label: "Fell short" },
+  { value: "disappointing", label: "Deeply disappointing" },
+];
+
+const STATUS_OPTIONS: TileOption[] = [
+  { value: "studying", label: "Currently Studying" },
+  { value: "graduated", label: "Graduated" },
+  { value: "other", label: "Other" },
+];
+
+const RECOMMEND_OPTIONS: TileOption[] = [
+  { value: "yes", label: "Yes, of course" },
+  { value: "no", label: "No I won’t recommend it to anyone" },
+  { value: "depends", label: "Depends on some scenarios" },
+];
+
+const EXPECTATION_OPTIONS: TileOption[] = [
+  { value: "promised", label: "Didn’t match what was promised" },
+  { value: "expectations", label: "Just fell below my expectations" },
+];
+
+const TOTAL_STEPS = 5;
+const MIN_WORDS = 5;
 
 interface CollegeReviewFormProps {
   institutionName: string;
+  onChangeCollege?: () => void;
 }
 
-function emptyRatings(ids: string[]) {
-  return Object.fromEntries(ids.map((id) => [id, 0])) as Record<string, number>;
+function emptyDraft(): CategoryDraft {
+  return { sentiment: "", pros: "", cons: "" };
 }
 
-function collectRatingIds(criteria: Criterion[]): string[] {
-  const ids: string[] = [];
-  for (const criterion of criteria) {
-    for (const q of criterion.detailQuestions ?? []) {
-      if (q.type === "rating") ids.push(`${criterion.id}.${q.id}`);
-    }
-  }
-  return ids;
-}
-
-function ratingDetailKeys(criterion: Criterion): string[] {
-  return (criterion.detailQuestions ?? [])
-    .filter((q): q is Extract<DetailQuestion, { type: "rating" }> => q.type === "rating")
-    .map((q) => `${criterion.id}.${q.id}`);
-}
-
-/** Average of sub-ratings, rounded to 1 decimal (tenths of a star). */
-function averageDetailRatings(
-  criterion: Criterion,
-  detailRatings: Record<string, number>
-): number | null {
-  const keys = ratingDetailKeys(criterion);
-  if (keys.length === 0) return null;
-  if (!keys.every((key) => (detailRatings[key] ?? 0) > 0)) return null;
-  const sum = keys.reduce((acc, key) => acc + (detailRatings[key] ?? 0), 0);
-  return Math.round((sum / keys.length) * 10) / 10;
-}
-
-function expandInitialAdvanced() {
-  return { academics: true };
+function wordCount(text: string): number {
+  return text.trim().split(/\s+/).filter(Boolean).length;
 }
 
 function TileRadioGroup({
@@ -373,7 +118,7 @@ function TileRadioGroup({
   options: TileOption[];
   value: string;
   onChange: (value: string) => void;
-  columns?: 2 | 3;
+  columns?: 1 | 2 | 3;
 }) {
   return (
     <div
@@ -401,94 +146,36 @@ function TileRadioGroup({
   );
 }
 
-function CriteriaRow({
-  label,
-  value,
-  onChange,
-  required,
-  nested,
-}: {
-  label: string;
-  value: number;
-  onChange: (value: number) => void;
-  required?: boolean;
-  nested?: boolean;
-}) {
-  return (
-    <div
-      className={`review-criteria__row${nested ? " review-criteria__row--nested" : ""}`}
-    >
-      <span className="review-criteria__label">
-        {label}
-        {required && <span className="review-criteria__required">*</span>}
-      </span>
-      <StarRating value={value} onChange={onChange} compact />
-    </div>
-  );
-}
+export function CollegeReviewForm({
+  institutionName,
+  onChangeCollege,
+}: CollegeReviewFormProps) {
+  const [step, setStep] = useState<WizardStep>(1);
 
-function DetailFieldInput({
-  field,
-  value,
-  onChange,
-}: {
-  field: FieldDef;
-  value: string;
-  onChange: (value: string) => void;
-}) {
-  const inputId = useId();
-  return (
-    <div className="college-review-form__field">
-      <Label htmlFor={inputId} className="college-review-form__question">
-        {field.label}
-        {field.suffix ? (
-          <span className="college-review-form__field-suffix">
-            {" "}
-            ({field.suffix})
-          </span>
-        ) : null}
-      </Label>
-      <Input
-        id={inputId}
-        type={field.type === "number" ? "number" : "text"}
-        min={field.type === "number" ? 0 : undefined}
-        step={field.step}
-        className="college-review-form__input"
-        placeholder={field.placeholder}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-      />
-    </div>
-  );
-}
-
-export function CollegeReviewForm({ institutionName }: CollegeReviewFormProps) {
-  const [mode, setMode] = useState<ReviewMode>("quick");
-  const [overallRating, setOverallRating] = useState(0);
-  const [criteriaRatings, setCriteriaRatings] = useState(() =>
-    emptyRatings(CRITERIA.map((c) => c.id))
-  );
-  const [detailRatings, setDetailRatings] = useState(() =>
-    emptyRatings(collectRatingIds(CRITERIA))
-  );
-  const [answers, setAnswers] = useState<Record<string, string>>({});
-  const [expanded, setExpanded] = useState<Partial<Record<CriteriaId, boolean>>>(
-    {}
-  );
-  /** Parent stars the user set by hand — skip auto-average for these. */
-  const [manualCriteria, setManualCriteria] = useState<
-    Partial<Record<CriteriaId, boolean>>
-  >({});
-
-  const [currentlyStudying, setCurrentlyStudying] = useState("");
-  const [reviewerRelation, setReviewerRelation] = useState("");
-  const [reviewerRelationOther, setReviewerRelationOther] = useState("");
-  const [comment, setComment] = useState("");
   const [degreeLevel, setDegreeLevel] = useState("");
   const [branch, setBranch] = useState("");
   const [branchOther, setBranchOther] = useState("");
-  const [admissionYear, setAdmissionYear] = useState("");
-  const [graduationYear, setGraduationYear] = useState("");
+  const [batchYear, setBatchYear] = useState("");
+  const [status, setStatus] = useState("");
+  const [reviewerRelation, setReviewerRelation] = useState("");
+  const [reviewerRelationOther, setReviewerRelationOther] = useState("");
+  const [fullyAnonymous, setFullyAnonymous] = useState(true);
+
+  const [activeCategory, setActiveCategory] = useState<CategoryId>("academics");
+  const [categoryDrafts, setCategoryDrafts] = useState<
+    Record<CategoryId, CategoryDraft>
+  >(() =>
+    Object.fromEntries(
+      CATEGORIES.map((c) => [c.id, emptyDraft()])
+    ) as Record<CategoryId, CategoryDraft>
+  );
+
+  const [recommend, setRecommend] = useState("");
+  const [recommendReason, setRecommendReason] = useState("");
+  const [oneLiner, setOneLiner] = useState("");
+  const [overallSentiment, setOverallSentiment] = useState("");
+  const [expectationGap, setExpectationGap] = useState("");
+
   const [showVerifyFlow, setShowVerifyFlow] = useState(false);
   const [verifySession, setVerifySession] = useState(0);
 
@@ -496,9 +183,21 @@ export function CollegeReviewForm({ institutionName }: CollegeReviewFormProps) {
   const selectedBranch =
     branchOptions.find((option) => option.value === branch) ?? null;
   const showBranchSpecify = branchNeedsSpecify(branch);
+  const draft = categoryDrafts[activeCategory];
+  const prosWords = wordCount(draft.pros);
+  const consWords = wordCount(draft.cons);
 
-  function handleStudyingChange(value: string) {
-    setCurrentlyStudying(value);
+  const filledCategories = CATEGORIES.filter((c) => {
+    const d = categoryDrafts[c.id];
+    return (
+      d.sentiment &&
+      wordCount(d.pros) >= MIN_WORDS &&
+      wordCount(d.cons) >= MIN_WORDS
+    );
+  }).length;
+
+  function handleStatusChange(value: string) {
+    setStatus(value);
     if (value !== "other") {
       setReviewerRelation("");
       setReviewerRelationOther("");
@@ -516,427 +215,174 @@ export function CollegeReviewForm({ institutionName }: CollegeReviewFormProps) {
     if (!branchNeedsSpecify(value)) setBranchOther("");
   }
 
-  function setCriterion(id: CriteriaId, value: number) {
-    setManualCriteria((prev) => ({ ...prev, [id]: true }));
-    setCriteriaRatings((prev) => ({ ...prev, [id]: value }));
-    if (mode === "advanced") {
-      setExpanded((prev) => ({ ...prev, [id]: true }));
-    }
-  }
-
-  function setAnswer(id: string, value: string) {
-    setAnswers((prev) => ({ ...prev, [id]: value }));
-  }
-
-  function setDetailRating(criterionId: CriteriaId, key: string, value: number) {
-    const nextDetails = { ...detailRatings, [key]: value };
-    setDetailRatings(nextDetails);
-
-    if (manualCriteria[criterionId]) return;
-
-    const criterion = CRITERIA.find((c) => c.id === criterionId);
-    if (!criterion) return;
-
-    const avg = averageDetailRatings(criterion, nextDetails);
-    setCriteriaRatings((prev) => ({ ...prev, [criterionId]: avg ?? 0 }));
-  }
-
-  function toggleExpanded(id: CriteriaId) {
-    setExpanded((prev) => ({ ...prev, [id]: !prev[id] }));
+  function updateDraft(patch: Partial<CategoryDraft>) {
+    setCategoryDrafts((prev) => ({
+      ...prev,
+      [activeCategory]: { ...prev[activeCategory], ...patch },
+    }));
   }
 
   function resetForm() {
-    setOverallRating(0);
-    setCriteriaRatings(emptyRatings(CRITERIA.map((c) => c.id)));
-    setDetailRatings(emptyRatings(collectRatingIds(CRITERIA)));
-    setAnswers({});
-    setExpanded(mode === "advanced" ? expandInitialAdvanced() : {});
-    setManualCriteria({});
-    setCurrentlyStudying("");
-    setReviewerRelation("");
-    setReviewerRelationOther("");
-    setComment("");
+    setStep(1);
     setDegreeLevel("");
     setBranch("");
     setBranchOther("");
-    setAdmissionYear("");
-    setGraduationYear("");
+    setBatchYear("");
+    setStatus("");
+    setReviewerRelation("");
+    setReviewerRelationOther("");
+    setFullyAnonymous(true);
+    setActiveCategory("academics");
+    setCategoryDrafts(
+      Object.fromEntries(
+        CATEGORIES.map((c) => [c.id, emptyDraft()])
+      ) as Record<CategoryId, CategoryDraft>
+    );
+    setRecommend("");
+    setRecommendReason("");
+    setOneLiner("");
+    setOverallSentiment("");
+    setExpectationGap("");
   }
 
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-
-    if (overallRating === 0) {
-      toast.error("Please give an overall rating.");
-      return;
+  function validateStep1(): boolean {
+    if (!degreeLevel) {
+      toast.error("Please select a program level.");
+      return false;
     }
-
-    if (currentlyStudying === "other") {
+    if (!branch) {
+      toast.error("Please select a specialization.");
+      return false;
+    }
+    if (showBranchSpecify && !branchOther.trim()) {
+      toast.error("Please specify your specialization.");
+      return false;
+    }
+    if (!batchYear.trim()) {
+      toast.error("Please enter your batch year.");
+      return false;
+    }
+    if (!status) {
+      toast.error("Please select your current status.");
+      return false;
+    }
+    if (status === "other") {
       if (!reviewerRelation) {
         toast.error("Please tell us how you are related to this college.");
-        return;
+        return false;
       }
       if (reviewerRelation === "other" && !reviewerRelationOther.trim()) {
         toast.error("Please briefly describe your relation.");
-        return;
+        return false;
       }
     }
+    return true;
+  }
 
-    if (mode === "advanced") {
-      if (!degreeLevel) {
-        toast.error("Please select a degree level.");
-        return;
-      }
-      if (!branch) {
-        toast.error("Please select a branch / specialization.");
-        return;
-      }
-      if (showBranchSpecify && !branchOther.trim()) {
-        toast.error("Please specify your branch / specialization.");
-        return;
-      }
-      if (!answers.wasPlaced) {
-        toast.error("Please say whether you were placed.");
-        return;
-      }
+  function validateStep2(): boolean {
+    if (filledCategories < 1) {
+      toast.error(
+        `Fill at least one category with a rating, pros (≥${MIN_WORDS} words), and cons (≥${MIN_WORDS} words).`
+      );
+      return false;
     }
+    return true;
+  }
 
+  function validateStep3(): boolean {
+    if (!recommend) {
+      toast.error("Please choose a recommendation.");
+      return false;
+    }
+    return true;
+  }
+
+  function validateStep4(): boolean {
+    if (!oneLiner.trim()) {
+      toast.error("Please sum up your experience in one line.");
+      return false;
+    }
+    if (!overallSentiment) {
+      toast.error("Please describe your overall experience.");
+      return false;
+    }
+    if (
+      (overallSentiment === "fellShort" ||
+        overallSentiment === "disappointing") &&
+      !expectationGap
+    ) {
+      toast.error("Please say how it fell short.");
+      return false;
+    }
+    return true;
+  }
+
+  function goBack() {
+    if (step === 1) {
+      onChangeCollege?.();
+      return;
+    }
+    setStep((s) => (s - 1) as WizardStep);
+  }
+
+  function goContinue() {
+    if (step === 1) {
+      if (!validateStep1()) return;
+      setStep(2);
+      return;
+    }
+    if (step === 2) {
+      if (!validateStep2()) return;
+      setStep(3);
+      return;
+    }
+    if (step === 3) {
+      if (!validateStep3()) return;
+      setStep(4);
+      return;
+    }
+    if (!validateStep4()) return;
     setVerifySession((n) => n + 1);
     setShowVerifyFlow(true);
   }
 
-  const shortName =
-    institutionName.length > 40
-      ? `${institutionName.slice(0, 40)}…`
-      : institutionName;
-
-  function renderDetailQuestion(
-    criterionId: CriteriaId,
-    question: DetailQuestion
-  ) {
-    if (question.type === "rating") {
-      const key = `${criterionId}.${question.id}`;
-      return (
-        <CriteriaRow
-          key={key}
-          nested
-          label={question.label}
-          value={detailRatings[key] ?? 0}
-          onChange={(value) => setDetailRating(criterionId, key, value)}
-        />
-      );
-    }
-
-    if (question.type === "tiles") {
-      return (
-        <div key={question.id} className="review-criteria__detail-block">
-          <Label className="college-review-form__question">
-            {question.label}
-            {question.required && (
-              <span className="review-criteria__required">*</span>
-            )}
-          </Label>
-          <TileRadioGroup
-            name={`${criterionId}-${question.id}`}
-            value={answers[question.id] ?? ""}
-            onChange={(value) => setAnswer(question.id, value)}
-            options={question.options}
-            columns={question.columns}
-          />
-        </div>
-      );
-    }
-
-    if (question.type === "select") {
-      return (
-        <div key={question.id} className="review-criteria__detail-block">
-          <Label className="college-review-form__question">{question.label}</Label>
-          <Select
-            value={answers[question.id] ?? ""}
-            onValueChange={(value) => setAnswer(question.id, value ?? "")}
-          >
-            <SelectTrigger className="college-review-form__select" size="default">
-              <SelectValue placeholder={question.placeholder ?? "Select"}>
-                {answers[question.id]
-                  ? (question.options.find(
-                      (option) => option.value === answers[question.id]
-                    )?.label ?? answers[question.id])
-                  : null}
-              </SelectValue>
-            </SelectTrigger>
-            <SelectContent>
-              {question.options.map((option) => (
-                <SelectItem key={option.value} value={option.value}>
-                  {option.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-      );
-    }
-
-    if (question.type === "conditional-text") {
-      if (answers[question.when.questionId] !== question.when.equals) {
-        return null;
-      }
-      return (
-        <div key={question.id} className="review-criteria__detail-block">
-          <Label
-            htmlFor={`${criterionId}-${question.id}`}
-            className="college-review-form__question"
-          >
-            {question.label}
-          </Label>
-          <Textarea
-            id={`${criterionId}-${question.id}`}
-            placeholder={question.placeholder}
-            value={answers[question.id] ?? ""}
-            onChange={(e) => setAnswer(question.id, e.target.value)}
-            rows={question.rows ?? 3}
-          />
-        </div>
-      );
-    }
-
-    if (question.type === "conditional-row") {
-      if (answers[question.when.questionId] !== question.when.equals) {
-        return null;
-      }
-      return (
-        <div
-          key={question.id}
-          className="college-review-form__section--row review-criteria__detail-block"
-        >
-          {question.fields.map((field) => (
-            <DetailFieldInput
-              key={field.id}
-              field={field}
-              value={answers[field.id] ?? ""}
-              onChange={(value) => setAnswer(field.id, value)}
-            />
-          ))}
-        </div>
-      );
-    }
-
-    return (
-      <div
-        key={question.id}
-        className="college-review-form__section--row review-criteria__detail-block"
-      >
-        {question.fields.map((field) => (
-          <DetailFieldInput
-            key={field.id}
-            field={field}
-            value={answers[field.id] ?? ""}
-            onChange={(value) => setAnswer(field.id, value)}
-          />
-        ))}
-      </div>
-    );
-  }
+  const showExpectationFollowUp =
+    overallSentiment === "fellShort" || overallSentiment === "disappointing";
+  const canGoBack = step > 1 || Boolean(onChangeCollege);
+  const progressPct = Math.round((step / TOTAL_STEPS) * 100);
 
   return (
-    <form className="college-review-form" onSubmit={handleSubmit}>
-      <section className="college-review-form__section college-review-form__section--mode">
-        <div className="review-mode-toggle" role="tablist" aria-label="Review type">
-          <button
-            type="button"
-            role="tab"
-            aria-selected={mode === "quick"}
-            className={`review-mode-toggle__btn${mode === "quick" ? " review-mode-toggle__btn--active" : ""}`}
-            onClick={() => {
-              setMode("quick");
-              setExpanded({});
-            }}
-          >
-            Quick review
-          </button>
-          <button
-            type="button"
-            role="tab"
-            aria-selected={mode === "advanced"}
-            className={`review-mode-toggle__btn${mode === "advanced" ? " review-mode-toggle__btn--active" : ""}`}
-            onClick={() => {
-              setMode("advanced");
-              setExpanded(expandInitialAdvanced());
-            }}
-          >
-            Advanced review
-          </button>
-        </div>
-      </section>
+    <form
+      className="college-review-form"
+      onSubmit={(e) => {
+        e.preventDefault();
+        goContinue();
+      }}
+    >
+      <p className="college-review-form__hint" aria-live="polite">
+        Step {step} of {TOTAL_STEPS} · {progressPct}%
+      </p>
 
-      <section className="college-review-form__section">
-        <CriteriaRow
-          label="Overall rating"
-          value={overallRating}
-          onChange={setOverallRating}
-          required
-        />
-      </section>
-
-      <section className="college-review-form__section">
-        <h3 className="college-review-form__heading">Rate {shortName}</h3>
-        <div className="review-criteria">
-          {CRITERIA.map((criterion) => {
-            const details =
-              mode === "advanced" && criterion.detailQuestions
-                ? criterion.detailQuestions
-                : null;
-            const isOpen = Boolean(details && expanded[criterion.id]);
-
-            return (
-              <div
-                key={criterion.id}
-                className={`review-criteria__item${isOpen ? " review-criteria__item--open" : ""}`}
-              >
-                <div className="review-criteria__row">
-                  {details ? (
-                    <button
-                      type="button"
-                      className="review-criteria__expand"
-                      aria-expanded={isOpen}
-                      onClick={() => toggleExpanded(criterion.id)}
-                    >
-                      <span className="review-criteria__label">
-                        {criterion.label}
-                      </span>
-                      <ChevronDown
-                        className={`review-criteria__chevron${isOpen ? " review-criteria__chevron--open" : ""}`}
-                        aria-hidden
-                      />
-                    </button>
-                  ) : (
-                    <span className="review-criteria__label">
-                      {criterion.label}
-                    </span>
-                  )}
-                  <StarRating
-                    value={criteriaRatings[criterion.id] ?? 0}
-                    onChange={(value) => setCriterion(criterion.id, value)}
-                    compact
-                  />
-                </div>
-
-                {details && (
-                  <div
-                    className={`review-criteria__details${isOpen ? " review-criteria__details--open" : ""}`}
-                    hidden={!isOpen}
-                  >
-                    {details.map((question) =>
-                      renderDetailQuestion(criterion.id, question)
-                    )}
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      </section>
-
-      <section className="college-review-form__section">
-        <Label className="college-review-form__question">
-          Do you currently study here?
-        </Label>
-        <TileRadioGroup
-          name="currently-studying"
-          value={currentlyStudying}
-          onChange={handleStudyingChange}
-          columns={3}
-          options={[
-            { value: "yes", label: "Yes" },
-            { value: "no", label: "No (alumni)" },
-            { value: "other", label: "Other" },
-          ]}
-        />
-
-        {currentlyStudying === "other" && (
-          <div className="college-review-form__other-relation">
-            <div className="college-review-form__field">
-              <Label className="college-review-form__question">
-                How are you related to this college?
-                <span className="review-criteria__required">*</span>
-              </Label>
-              <p className="college-review-form__hint">
-                Friend, parent, or someone else filling this on their behalf.
-              </p>
-              <Select
-                value={reviewerRelation}
-                onValueChange={(value) => {
-                  setReviewerRelation(value ?? "");
-                  if (value !== "other") setReviewerRelationOther("");
-                }}
-              >
-                <SelectTrigger
-                  className="college-review-form__select"
-                  size="default"
-                >
-                  <SelectValue placeholder="Select relation">
-                    {reviewerRelation === "friend"
-                      ? "Friend of a student"
-                      : reviewerRelation === "parent"
-                        ? "Parent / guardian"
-                        : reviewerRelation === "sibling"
-                          ? "Sibling"
-                          : reviewerRelation === "counselor"
-                            ? "Counselor / mentor"
-                            : reviewerRelation === "other"
-                              ? "Other (describe)"
-                              : null}
-                  </SelectValue>
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="friend">Friend of a student</SelectItem>
-                  <SelectItem value="parent">Parent / guardian</SelectItem>
-                  <SelectItem value="sibling">Sibling</SelectItem>
-                  <SelectItem value="counselor">Counselor / mentor</SelectItem>
-                  <SelectItem value="other">Other (describe)</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            {reviewerRelation === "other" && (
-              <div className="college-review-form__field">
-                <Label
-                  htmlFor="reviewer-relation-other"
-                  className="college-review-form__question"
-                >
-                  Describe your relation
-                  <span className="review-criteria__required">*</span>
-                </Label>
-                <Input
-                  id="reviewer-relation-other"
-                  className="college-review-form__input"
-                  placeholder="e.g. Visiting faculty, recruiter, sibling of alumni…"
-                  value={reviewerRelationOther}
-                  onChange={(e) => setReviewerRelationOther(e.target.value)}
-                />
-              </div>
-            )}
-          </div>
-        )}
-      </section>
-
-      {mode === "advanced" && (
+      {step === 1 && (
         <>
           <section className="college-review-form__section">
+            <h3 className="college-review-form__heading">
+              Tell us about your program
+            </h3>
+
             <div className="college-review-form__field">
               <Label className="college-review-form__question">
-                Degree level
+                What level of program?
               </Label>
               <Select
                 value={degreeLevel}
-                onValueChange={(value) =>
-                  handleDegreeLevelChange(value ?? "")
-                }
+                onValueChange={(value) => handleDegreeLevelChange(value ?? "")}
               >
                 <SelectTrigger
                   className="college-review-form__select"
                   size="default"
                 >
-                  <SelectValue placeholder="Select degree level">
+                  <SelectValue placeholder="Select program level">
                     {degreeLevel ? getDegreeLevelLabel(degreeLevel) : null}
                   </SelectValue>
                 </SelectTrigger>
@@ -949,9 +395,7 @@ export function CollegeReviewForm({ institutionName }: CollegeReviewFormProps) {
                 </SelectContent>
               </Select>
             </div>
-          </section>
 
-          <section className="college-review-form__section">
             <div className="college-review-form__field">
               <Label className="college-review-form__question">
                 Branch / specialization
@@ -973,7 +417,7 @@ export function CollegeReviewForm({ institutionName }: CollegeReviewFormProps) {
                   placeholder={
                     degreeLevel
                       ? "Search branch / specialization…"
-                      : "Select degree level first"
+                      : "Select program level first"
                   }
                   disabled={!degreeLevel}
                   showClear={Boolean(selectedBranch)}
@@ -1009,70 +453,295 @@ export function CollegeReviewForm({ institutionName }: CollegeReviewFormProps) {
                 />
               </div>
             )}
+
+            <div className="college-review-form__field">
+              <Label
+                htmlFor="batch-year"
+                className="college-review-form__question"
+              >
+                Batch year
+              </Label>
+              <Input
+                id="batch-year"
+                type="number"
+                min={1980}
+                max={2100}
+                className="college-review-form__input"
+                placeholder="e.g. 2024"
+                value={batchYear}
+                onChange={(e) => setBatchYear(e.target.value)}
+              />
+            </div>
+          </section>
+
+          <section className="college-review-form__section">
+            <Label className="college-review-form__question">Status</Label>
+            <TileRadioGroup
+              name="status"
+              value={status}
+              onChange={handleStatusChange}
+              columns={3}
+              options={STATUS_OPTIONS}
+            />
+
+            {status === "other" && (
+              <div className="college-review-form__other-relation">
+                <div className="college-review-form__field">
+                  <Label className="college-review-form__question">
+                    How are you related to this college?
+                    <span className="review-criteria__required">*</span>
+                  </Label>
+                  <p className="college-review-form__hint">
+                    Friend, parent, or someone else filling this on their behalf.
+                  </p>
+                  <Select
+                    value={reviewerRelation}
+                    onValueChange={(value) => {
+                      setReviewerRelation(value ?? "");
+                      if (value !== "other") setReviewerRelationOther("");
+                    }}
+                  >
+                    <SelectTrigger
+                      className="college-review-form__select"
+                      size="default"
+                    >
+                      <SelectValue placeholder="Select relation">
+                        {reviewerRelation === "friend"
+                          ? "Friend of a student"
+                          : reviewerRelation === "parent"
+                            ? "Parent / guardian"
+                            : reviewerRelation === "sibling"
+                              ? "Sibling"
+                              : reviewerRelation === "counselor"
+                                ? "Counselor / mentor"
+                                : reviewerRelation === "other"
+                                  ? "Other (describe)"
+                                  : null}
+                      </SelectValue>
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="friend">Friend of a student</SelectItem>
+                      <SelectItem value="parent">Parent / guardian</SelectItem>
+                      <SelectItem value="sibling">Sibling</SelectItem>
+                      <SelectItem value="counselor">Counselor / mentor</SelectItem>
+                      <SelectItem value="other">Other (describe)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {reviewerRelation === "other" && (
+                  <div className="college-review-form__field">
+                    <Label
+                      htmlFor="reviewer-relation-other"
+                      className="college-review-form__question"
+                    >
+                      Describe your relation
+                      <span className="review-criteria__required">*</span>
+                    </Label>
+                    <Input
+                      id="reviewer-relation-other"
+                      className="college-review-form__input"
+                      placeholder="e.g. Visiting faculty, recruiter, sibling of alumni…"
+                      value={reviewerRelationOther}
+                      onChange={(e) => setReviewerRelationOther(e.target.value)}
+                    />
+                  </div>
+                )}
+              </div>
+            )}
+          </section>
+
+          <section className="college-review-form__section">
+            <Label className="college-review-form__question">Anonymity</Label>
+            <div className="review-tiles" data-columns="1" role="group">
+              <label
+                className={`review-tile${fullyAnonymous ? " review-tile--active" : ""}`}
+              >
+                <input
+                  type="checkbox"
+                  checked={fullyAnonymous}
+                  onChange={(e) => setFullyAnonymous(e.target.checked)}
+                />
+                <span>Fully Anonymous</span>
+              </label>
+            </div>
+            <p className="college-review-form__hint">
+              No program, specialization, or batch year shown publicly.
+            </p>
+          </section>
+        </>
+      )}
+
+      {step === 2 && (
+        <>
+          <section className="college-review-form__section">
+            <h3 className="college-review-form__heading">
+              Share your experience in detail
+            </h3>
+            <p className="college-review-form__hint">
+              Pick a category and fill it in. At least one required ({filledCategories}{" "}
+              filled).
+            </p>
+            <TileRadioGroup
+              name="category"
+              value={activeCategory}
+              onChange={(value) => setActiveCategory(value as CategoryId)}
+              columns={2}
+              options={CATEGORIES.map((c) => ({
+                value: c.id,
+                label: c.label,
+              }))}
+            />
           </section>
 
           <section className="college-review-form__section">
             <Label className="college-review-form__question">
-              Batch (admission – graduation year)
+              How was {CATEGORIES.find((c) => c.id === activeCategory)?.label}?
             </Label>
-            <div className="college-review-form__section--row">
-              <div className="college-review-form__field">
-                <Label
-                  htmlFor="admission-year"
-                  className="college-review-form__question college-review-form__question--subtle"
-                >
-                  Admission year
-                </Label>
-                <Input
-                  id="admission-year"
-                  type="number"
-                  min={1980}
-                  max={2100}
-                  className="college-review-form__input"
-                  placeholder="e.g. 2021"
-                  value={admissionYear}
-                  onChange={(e) => setAdmissionYear(e.target.value)}
-                />
-              </div>
-              <div className="college-review-form__field">
-                <Label
-                  htmlFor="graduation-year"
-                  className="college-review-form__question college-review-form__question--subtle"
-                >
-                  Graduation year
-                </Label>
-                <Input
-                  id="graduation-year"
-                  type="number"
-                  min={1980}
-                  max={2100}
-                  className="college-review-form__input"
-                  placeholder="e.g. 2025"
-                  value={graduationYear}
-                  onChange={(e) => setGraduationYear(e.target.value)}
-                />
-              </div>
+            <TileRadioGroup
+              name={`sentiment-${activeCategory}`}
+              value={draft.sentiment}
+              onChange={(value) => updateDraft({ sentiment: value })}
+              columns={1}
+              options={SENTIMENT_OPTIONS}
+            />
+          </section>
+
+          <section className="college-review-form__section">
+            <div className="college-review-form__field">
+              <Label htmlFor="pros" className="college-review-form__question">
+                Pros (Tell the positive aspects)
+              </Label>
+              <Textarea
+                id="pros"
+                placeholder="Write your message…"
+                value={draft.pros}
+                onChange={(e) => updateDraft({ pros: e.target.value })}
+                rows={4}
+              />
+              <p className="college-review-form__hint">
+                {prosWords >= MIN_WORDS
+                  ? `${prosWords} words ✓`
+                  : `At least ${MIN_WORDS} words`}
+              </p>
+            </div>
+
+            <div className="college-review-form__field">
+              <Label htmlFor="cons" className="college-review-form__question">
+                Cons (Tell the negative aspects)
+              </Label>
+              <Textarea
+                id="cons"
+                placeholder="Write your message…"
+                value={draft.cons}
+                onChange={(e) => updateDraft({ cons: e.target.value })}
+                rows={4}
+              />
+              <p className="college-review-form__hint">
+                {consWords >= MIN_WORDS
+                  ? `${consWords} words ✓`
+                  : `At least ${MIN_WORDS} words`}
+              </p>
             </div>
           </section>
         </>
       )}
 
-      <section className="college-review-form__section">
-        <Label htmlFor="comment" className="college-review-form__question">
-          Your review
-        </Label>
-        <Textarea
-          id="comment"
-          placeholder="Say what actually happened."
-          value={comment}
-          onChange={(e) => setComment(e.target.value)}
-          rows={5}
-        />
-      </section>
+      {step === 3 && (
+        <section className="college-review-form__section">
+          <h3 className="college-review-form__heading">
+            Your Final Recommendation
+          </h3>
+          <p className="college-review-form__hint">
+            Would you recommend {institutionName}?
+          </p>
+          <TileRadioGroup
+            name="recommend"
+            value={recommend}
+            onChange={setRecommend}
+            columns={1}
+            options={RECOMMEND_OPTIONS}
+          />
+          {recommend ? (
+            <div className="college-review-form__field">
+              <Label
+                htmlFor="recommend-reason"
+                className="college-review-form__question"
+              >
+                Any specific reason (optional)
+              </Label>
+              <Textarea
+                id="recommend-reason"
+                placeholder="Give a concise explanation"
+                value={recommendReason}
+                onChange={(e) => setRecommendReason(e.target.value)}
+                rows={3}
+              />
+            </div>
+          ) : null}
+        </section>
+      )}
+
+      {step === 4 && (
+        <>
+          <section className="college-review-form__section">
+            <h3 className="college-review-form__heading">Sum it up</h3>
+            <div className="college-review-form__field">
+              <Label
+                htmlFor="one-liner"
+                className="college-review-form__question"
+              >
+                Sum up your experience in one line
+              </Label>
+              <Input
+                id="one-liner"
+                className="college-review-form__input"
+                placeholder={`I really love ${institutionName}`}
+                value={oneLiner}
+                onChange={(e) => setOneLiner(e.target.value)}
+              />
+            </div>
+          </section>
+
+          <section className="college-review-form__section">
+            <Label className="college-review-form__question">
+              Overall, how would you describe your time here?
+            </Label>
+            <TileRadioGroup
+              name="overall-sentiment"
+              value={overallSentiment}
+              onChange={setOverallSentiment}
+              columns={1}
+              options={SENTIMENT_OPTIONS}
+            />
+          </section>
+
+          {showExpectationFollowUp ? (
+            <section className="college-review-form__section">
+              <Label className="college-review-form__question">
+                Did your college fall short of what was promised, or your
+                expectations?
+              </Label>
+              <TileRadioGroup
+                name="expectation-gap"
+                value={expectationGap}
+                onChange={setExpectationGap}
+                columns={1}
+                options={EXPECTATION_OPTIONS}
+              />
+            </section>
+          ) : null}
+        </>
+      )}
 
       <div className="college-review-form__actions">
+        {canGoBack ? (
+          <Button type="button" variant="outline" size="lg" onClick={goBack}>
+            Back
+          </Button>
+        ) : null}
         <Button type="submit" size="lg">
-          {mode === "advanced" ? "Submit advanced review" : "Submit review"}
+          Continue
         </Button>
       </div>
 
@@ -1085,16 +754,18 @@ export function CollegeReviewForm({ institutionName }: CollegeReviewFormProps) {
         <DialogContent className="review-verify-dialog" showCloseButton>
           <DialogTitle className="sr-only">Submit review verification</DialogTitle>
           <DialogDescription className="sr-only">
-            Choose visibility, verify email, and complete affiliation checks
-            before publishing your review.
+            Verify your identity and complete affiliation checks before
+            publishing your review.
           </DialogDescription>
           {showVerifyFlow ? (
             <ReviewVerifyFlow
               key={verifySession}
               institutionName={institutionName}
+              fullyAnonymous={fullyAnonymous}
               onComplete={() => {
                 setShowVerifyFlow(false);
                 resetForm();
+                onChangeCollege?.();
               }}
             />
           ) : null}

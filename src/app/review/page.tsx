@@ -5,7 +5,7 @@ import { ReviewFlow } from "@/components/review/ReviewFlow";
 import "@/styles/review.css";
 
 export const metadata: Metadata = {
-  title: "Give your college review | College Review",
+  title: "Give your college review",
   description:
     "Search your college and leave an honest review — without judgment.",
 };

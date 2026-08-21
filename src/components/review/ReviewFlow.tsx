@@ -383,7 +383,10 @@ export function ReviewFlow() {
               {formatLocation(selected)}
             </p>
           </div>
-          <CollegeReviewForm institutionName={selected.name} />
+          <CollegeReviewForm
+            institutionName={selected.name}
+            onChangeCollege={() => setSelected(null)}
+          />
         </section>
       )}
 

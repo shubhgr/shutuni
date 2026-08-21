@@ -48,7 +48,7 @@ export function AppHeader({ showSearch = false }: AppHeaderProps) {
     <header className="app-shell__header">
       <Link href="/" className="app-shell__brand">
         <span className="app-shell__brand-icon" aria-hidden />
-        College Review
+        VerdictED
       </Link>
 
       {canShowSearch && (

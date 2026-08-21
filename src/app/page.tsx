@@ -5,7 +5,7 @@ import Link from "next/link";
 import "@/styles/home.css";
 
 export const metadata: Metadata = {
-  title: "ShutUni Home | Honest college reviews",
+  title: "Honest college reviews",
   description:
     "When college marketing spins the truth Megaphone. Uncensored student feedback — no paid rankings, no institutional PR.",
 };
@@ -364,7 +364,7 @@ export default function HomePage() {
                   <Link href="/terms">Terms &amp; Conditions</Link>
                 </nav>
                 <p className="suhome__footer-legal">
-                  © 2026 CampusJanta. By the students. For the students.
+                  © 2026 VerdictED. By the students. For the students.
                 </p>
               </div>
             </div>
