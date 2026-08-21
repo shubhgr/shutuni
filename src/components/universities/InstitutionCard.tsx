@@ -36,11 +36,11 @@ export function InstitutionCard({ institution }: InstitutionCardProps) {
     : institution.district;
 
   const courses = institution.programmes_count ?? 0;
-  const reviews = 0;
+  const reviews = institution.review_count ?? 0;
   const university = formatUniversity(institution.university);
   const rating =
     institution.college_score != null
-      ? institution.college_score.toFixed(2)
+      ? institution.college_score.toFixed(1)
       : "—";
 
   return (

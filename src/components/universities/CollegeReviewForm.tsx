@@ -35,26 +35,18 @@ import {
   getBranchOptions,
   getDegreeLevelLabel,
 } from "@/lib/review-degree-options";
+import type {
+  ReviewCategoryDraft,
+  ReviewCategoryId,
+  ReviewSubmitPayload,
+} from "@/lib/review-types";
 
 import "@/styles/university-detail.css";
 
 type TileOption = { value: string; label: string };
 type WizardStep = 1 | 2 | 3 | 4;
-
-type CategoryId =
-  | "academics"
-  | "faculty"
-  | "infrastructure"
-  | "placements"
-  | "campusLife"
-  | "administration"
-  | "hostelFees";
-
-type CategoryDraft = {
-  sentiment: string;
-  pros: string;
-  cons: string;
-};
+type CategoryId = ReviewCategoryId;
+type CategoryDraft = ReviewCategoryDraft;
 
 const CATEGORIES: { id: CategoryId; label: string }[] = [
   { id: "academics", label: "Academics" },
@@ -103,6 +95,7 @@ const BATCH_YEAR_OPTIONS = Array.from(
 );
 
 interface CollegeReviewFormProps {
+  institutionId: string;
   institutionName: string;
   onChangeCollege?: () => void;
 }
@@ -218,6 +211,7 @@ function SentimentSlider({
 }
 
 export function CollegeReviewForm({
+  institutionId,
   institutionName,
   onChangeCollege,
 }: CollegeReviewFormProps) {
@@ -442,6 +436,27 @@ export function CollegeReviewForm({
     overallSentiment === "fellShort" || overallSentiment === "disappointing";
   const canGoBack = step > 1 || Boolean(onChangeCollege);
   const progressPct = Math.round((step / TOTAL_STEPS) * 100);
+
+  function buildReviewPayload(): Omit<ReviewSubmitPayload, "verification"> {
+    return {
+      institutionId,
+      institutionName,
+      fullyAnonymous,
+      degreeLevel,
+      branch,
+      branchOther: branchOther.trim() || undefined,
+      batchYear: batchYear.trim(),
+      status,
+      reviewerRelation: reviewerRelation || undefined,
+      reviewerRelationOther: reviewerRelationOther.trim() || undefined,
+      overallSentiment,
+      expectationGap: expectationGap || undefined,
+      oneLiner: oneLiner.trim(),
+      recommend,
+      recommendReason: recommendReason.trim() || undefined,
+      categories: categoryDrafts,
+    };
+  }
 
   return (
     <form
@@ -936,6 +951,7 @@ export function CollegeReviewForm({
               key={verifySession}
               institutionName={institutionName}
               fullyAnonymous={fullyAnonymous}
+              reviewDraft={buildReviewPayload()}
               onComplete={() => {
                 setShowVerifyFlow(false);
                 resetForm();

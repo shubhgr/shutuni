@@ -4,6 +4,7 @@ import {
   ALL_STATES_NAME,
   searchInstitutions,
 } from "@/lib/institutions-api";
+import { withReviewAverages } from "@/lib/review-averages";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -18,7 +19,8 @@ export async function GET(request: Request) {
 
   try {
     const data = await searchInstitutions(q, state, page, limit);
-    return NextResponse.json(data);
+    const results = await withReviewAverages(data.results);
+    return NextResponse.json({ ...data, results });
   } catch {
     return NextResponse.json(
       { error: "Failed to search institutions" },

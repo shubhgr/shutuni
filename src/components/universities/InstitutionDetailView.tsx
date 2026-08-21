@@ -229,7 +229,10 @@ export function InstitutionDetailView({ institution }: InstitutionDetailViewProp
             <p className="university-detail__summary">
               Share an honest review to help students choose the right college.
             </p>
-            <CollegeReviewForm institutionName={institution.name} />
+            <CollegeReviewForm
+              institutionId={institution.id}
+              institutionName={institution.name}
+            />
           </div>
         </TabsContent>
       </Tabs>

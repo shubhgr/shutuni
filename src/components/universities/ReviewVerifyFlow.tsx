@@ -20,6 +20,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { isValidEmail } from "@/lib/review-email-verify";
+import type {
+  ReviewSubmitPayload,
+  ReviewVerificationMethod,
+} from "@/lib/review-types";
 
 import "@/styles/university-detail.css";
 
@@ -43,12 +47,14 @@ const DOC_TYPES: { value: DocType; label: string }[] = [
 interface ReviewVerifyFlowProps {
   institutionName: string;
   fullyAnonymous?: boolean;
+  reviewDraft: Omit<ReviewSubmitPayload, "verification">;
   onComplete: () => void;
 }
 
 export function ReviewVerifyFlow({
   institutionName,
   fullyAnonymous = true,
+  reviewDraft,
   onComplete,
 }: ReviewVerifyFlowProps) {
   const [step, setStep] = useState<VerifyStep>("identity");
@@ -138,16 +144,55 @@ export function ReviewVerifyFlow({
     };
   }, []);
 
-  function finish() {
-    setStep("done");
-    window.setTimeout(() => {
+  async function submitReview(method: ReviewVerificationMethod) {
+    setBusy(true);
+    try {
+      const payload: ReviewSubmitPayload = {
+        ...reviewDraft,
+        verification: {
+          method,
+          displayName: displayName.trim(),
+          collegeEmail:
+            method === "email" ? email.trim() || undefined : undefined,
+          documentType:
+            method === "document" && docType ? docType : undefined,
+          documentFilename:
+            method === "document" && docFile ? docFile.name : undefined,
+          documentSize:
+            method === "document" && docFile ? docFile.size : undefined,
+        },
+      };
+
+      const res = await fetch("/api/reviews", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "same-origin",
+        body: JSON.stringify(payload),
+      });
+      const data = (await res.json().catch(() => ({}))) as {
+        error?: string;
+        id?: string;
+      };
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to save review");
+      }
+
+      setStep("done");
       toast.success(
         fullyAnonymous
-          ? "Review submitted anonymously. (UI demo — not saved yet.)"
-          : "Review submitted. (UI demo — not saved yet.)"
+          ? "Review submitted anonymously."
+          : "Review submitted."
       );
-      onComplete();
-    }, 700);
+      window.setTimeout(() => {
+        onComplete();
+      }, 700);
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "Failed to save review"
+      );
+    } finally {
+      setBusy(false);
+    }
   }
 
   function handleIdentityContinue() {
@@ -209,11 +254,7 @@ export function ReviewVerifyFlow({
       toast.error("Enter the 6-digit code.");
       return;
     }
-    setBusy(true);
-    window.setTimeout(() => {
-      setBusy(false);
-      finish();
-    }, 400);
+    void submitReview("email");
   }
 
   function handleDocumentSubmit() {
@@ -225,7 +266,7 @@ export function ReviewVerifyFlow({
       toast.error("Please upload a document.");
       return;
     }
-    finish();
+    void submitReview("document");
   }
 
   const stepTitle: Record<VerifyStep, string> = {
@@ -322,8 +363,13 @@ export function ReviewVerifyFlow({
             <Button type="button" variant="outline" onClick={() => setStep("identity")}>
               Back
             </Button>
-            <Button type="button" variant="outline" onClick={finish}>
-              Skip for now
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => void submitReview("skipped")}
+              disabled={busy}
+            >
+              {busy ? "Saving…" : "Skip for now"}
             </Button>
           </div>
         </div>
@@ -444,8 +490,12 @@ export function ReviewVerifyFlow({
             <Button type="button" variant="outline" onClick={() => setStep("method")}>
               Back
             </Button>
-            <Button type="button" onClick={handleDocumentSubmit}>
-              Submit for review
+            <Button
+              type="button"
+              onClick={handleDocumentSubmit}
+              disabled={busy}
+            >
+              {busy ? "Saving…" : "Submit for review"}
             </Button>
           </div>
         </div>

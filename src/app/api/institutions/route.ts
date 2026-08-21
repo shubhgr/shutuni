@@ -9,6 +9,7 @@ import {
   filterInstitutionsByQuery,
   filterInstitutionsByTypeAndDistrict,
 } from "@/lib/institutions-api";
+import { withReviewAverages } from "@/lib/review-averages";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -33,7 +34,9 @@ export async function GET(request: Request) {
 
       const total = filtered.length;
       const start = (page - 1) * limit;
-      const slice = filtered.slice(start, start + limit);
+      const slice = await withReviewAverages(
+        filtered.slice(start, start + limit)
+      );
 
       return NextResponse.json({
         institutions: slice,
@@ -62,7 +65,9 @@ export async function GET(request: Request) {
 
     const total = filtered.length;
     const start = (page - 1) * limit;
-    const slice = filtered.slice(start, start + limit);
+    const slice = await withReviewAverages(
+      filtered.slice(start, start + limit)
+    );
 
     return NextResponse.json({
       institutions: slice,

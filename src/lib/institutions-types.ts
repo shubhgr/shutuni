@@ -27,6 +27,7 @@ export interface InstitutionListItem {
   address?: string;
   college_score?: number | null;
   score?: number | null;
+  review_count?: number;
   university_tier?: string | null;
   category?: string | null;
   city?: string;

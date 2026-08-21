@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { fetchInstitutionDetail } from "@/lib/institutions-api";
+import { withReviewAverages } from "@/lib/review-averages";
 
 interface RouteContext {
   params: Promise<{ id: string }>;
@@ -13,7 +14,8 @@ export async function GET(request: Request, context: RouteContext) {
 
   try {
     const institution = await fetchInstitutionDetail(id, state);
-    return NextResponse.json(institution);
+    const [withAverage] = await withReviewAverages([institution]);
+    return NextResponse.json(withAverage ?? institution);
   } catch {
     return NextResponse.json(
       { error: "Institution not found" },
