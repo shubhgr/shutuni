@@ -949,16 +949,16 @@
 }
 
 .suhome__voices-banner {
-  position: relative;
-  display: flex;
   box-sizing: border-box;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
   align-self: center;
+  align-items: center;
   width: 100%;
-  max-width: 56rem; /* ~896px — narrower paper cut */
+  height: 40rem;
   padding: 8rem 4rem;
+  display: flex;
+  position: relative;
   overflow: hidden;
 }
 
@@ -970,13 +970,6 @@
   justify-content: center;
   overflow: hidden;
   pointer-events: none;
-}
-
-.suhome__voices-tear img {
-  width: 100%;
-  height: 100%;
-  max-width: none;
-  object-fit: fill;
 }
 
 .suhome__voices-copy {
@@ -2014,38 +2007,53 @@
   }
 
   .suhome__voices-banner {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    padding: 0;
+  }
+
+  .suhome__voices-tear {
+    position: relative;
+    inset: auto;
+    width: 100%;
+    aspect-ratio: 1;
+  }
+
+  .suhome__voices-tear img {
+    object-fit: contain;
+  }
+
+  .suhome__voices-copy {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    gap: 0.4rem;
     width: 100%;
-    max-width: 23.9375rem;
-    height: 18.75rem; /* 300px */
-    min-height: 18.75rem;
-    padding: 5.625rem 3.5rem 4.9rem; /* ~90 / 58 / 79 */
-    margin: 0 auto;
-  }
-
-  .suhome__voices-copy {
-    gap: 0.4rem; /* ~6px */
-    width: 100%;
-    max-width: 16.75rem;
-    align-items: center;
+    max-width: none;
+    padding: 0 1.25rem;
     text-align: center;
   }
 
   .suhome__voices-copy h2 {
-    font-size: 2.25rem; /* 36px */
     letter-spacing: -0.033rem;
     white-space: normal;
     text-align: center;
+    font-size: 1.8rem;
   }
 
   .suhome__voices-badge {
-    font-size: 2.625rem !important; /* 42px */
     letter-spacing: -0.064rem !important;
-    padding: 0.33rem 0.27rem !important;
     white-space: normal !important;
+    padding: 0.33rem 0.27rem !important;
+    font-size: 1.8rem !important;
   }
 
   .suhome__voices-megas {
