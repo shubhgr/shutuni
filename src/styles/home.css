@@ -955,6 +955,7 @@
   align-self: center;
   align-items: center;
   width: 100%;
+  max-width: 56rem;
   height: 40rem;
   padding: 8rem 4rem;
   display: flex;
@@ -970,6 +971,13 @@
   justify-content: center;
   overflow: hidden;
   pointer-events: none;
+}
+
+.suhome__voices-tear img {
+  width: 120%;
+  height: 120%;
+  max-width: none;
+  object-fit: cover;
 }
 
 .suhome__voices-copy {
@@ -1039,14 +1047,14 @@
 }
 
 .suhome__voices-mega--left {
-  left: -17.25rem; /* -276px */
+  left: -4.5rem;
   width: 16.875rem; /* 270px */
   height: 15.9375rem; /* 255px */
   transform: translateY(-50%) rotate(180deg) scaleY(-1);
 }
 
 .suhome__voices-mega--right {
-  right: -17.875rem; /* -286px */
+  right: -4.5rem;
   left: auto;
   width: 17.5rem; /* 280px */
   height: 16.75rem; /* 268px */
@@ -1208,11 +1216,11 @@
   }
 
   .suhome__voices-mega--left {
-    left: -8rem;
+    left: -2rem;
   }
 
   .suhome__voices-mega--right {
-    right: -8rem;
+    right: -2rem;
   }
 
   .suhome__footer {
