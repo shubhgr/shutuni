@@ -54,6 +54,7 @@ export async function ensureReviewSchema() {
           document_type TEXT,
           document_filename TEXT,
           document_size INTEGER,
+          document_url TEXT,
           display_name TEXT NOT NULL,
           linkedin_sub TEXT,
           linkedin_email TEXT,
@@ -68,6 +69,10 @@ export async function ensureReviewSchema() {
       await sql`
         CREATE INDEX IF NOT EXISTS reviews_created_at_idx
         ON reviews (created_at DESC)
+      `;
+      await sql`
+        ALTER TABLE reviews
+        ADD COLUMN IF NOT EXISTS document_url TEXT
       `;
     })().catch((error) => {
       schemaReady = null;

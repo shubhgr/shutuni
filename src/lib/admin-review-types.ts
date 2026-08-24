@@ -26,5 +26,8 @@ export type AdminReview = {
   categories: Partial<Record<ReviewCategoryId, AdminReviewCategory>>;
   verificationMethod: string;
   moderationStatus: string;
+  documentType: string | null;
+  documentFilename: string | null;
+  documentUrl: string | null;
   createdAt: string;
 };

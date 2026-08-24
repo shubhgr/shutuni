@@ -213,71 +213,100 @@ export function AdminReviewsPanel() {
 
   return (
     <div className="admin-page">
-      <header className="admin-header">
-        <div>
-          <h1 className="admin-header__title">Review admin</h1>
-          <p className="admin-header__meta">
-            {total} review{total === 1 ? "" : "s"}
-            {search ? ` matching “${search}”` : ""}
-          </p>
-        </div>
-        <Button type="button" variant="outline" onClick={() => void handleSignOut()}>
-          <LogOut size={16} />
-          Sign out
-        </Button>
-      </header>
+      <div className="admin-shell">
+        <header className="admin-top">
+          <div className="admin-top__brand">
+            <p className="admin-top__brand-name">VerdictED</p>
+            <div className="admin-top__title-row">
+              <h1 className="admin-top__title">Review admin</h1>
+              <span className="admin-top__count">
+                {total} review{total === 1 ? "" : "s"}
+              </span>
+            </div>
+            {search ? (
+              <p className="admin-top__filter">Matching “{search}”</p>
+            ) : (
+              <p className="admin-top__filter">
+                Who reviewed which college
+              </p>
+            )}
+          </div>
 
-      <div className="admin-toolbar">
+          <div className="admin-top__actions">
+            <div className="admin-view-toggle" role="group" aria-label="View mode">
+              <button
+                type="button"
+                className={`admin-view-toggle__btn${view === "list" ? " is-active" : ""}`}
+                onClick={() => setView("list")}
+                aria-pressed={view === "list"}
+              >
+                <List size={16} />
+                List
+              </button>
+              <button
+                type="button"
+                className={`admin-view-toggle__btn${view === "cards" ? " is-active" : ""}`}
+                onClick={() => setView("cards")}
+                aria-pressed={view === "cards"}
+              >
+                <LayoutGrid size={16} />
+                Cards
+              </button>
+            </div>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => void loadReviews(search)}
+              disabled={loading}
+              aria-label="Refresh reviews"
+            >
+              <RefreshCw size={16} className={loading ? "admin-spin" : undefined} />
+              Refresh
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => void handleSignOut()}
+            >
+              <LogOut size={16} />
+              Sign out
+            </Button>
+          </div>
+        </header>
+
         <form
-          className="admin-search"
+          className="admin-searchbar"
           onSubmit={(e) => {
             e.preventDefault();
             setSearch(query.trim());
           }}
         >
-          <Search size={16} aria-hidden className="admin-search__icon" />
+          <Search size={18} aria-hidden className="admin-searchbar__icon" />
           <Input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search reviewer, email, or college…"
             aria-label="Search reviews"
+            className="admin-searchbar__input"
           />
-          <Button type="submit" variant="outline">
+          {query ? (
+            <button
+              type="button"
+              className="admin-searchbar__clear"
+              onClick={() => {
+                setQuery("");
+                setSearch("");
+              }}
+            >
+              Clear
+            </button>
+          ) : null}
+          <Button type="submit" className="admin-searchbar__submit">
             Search
           </Button>
         </form>
-
-        <div className="admin-toolbar__right">
-          <div className="admin-view-toggle" role="group" aria-label="View mode">
-            <button
-              type="button"
-              className={`admin-view-toggle__btn${view === "list" ? " is-active" : ""}`}
-              onClick={() => setView("list")}
-              aria-pressed={view === "list"}
-            >
-              <List size={16} />
-              List
-            </button>
-            <button
-              type="button"
-              className={`admin-view-toggle__btn${view === "cards" ? " is-active" : ""}`}
-              onClick={() => setView("cards")}
-              aria-pressed={view === "cards"}
-            >
-              <LayoutGrid size={16} />
-              Cards
-            </button>
-          </div>
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => void loadReviews(search)}
-            disabled={loading}
-          >
-            <RefreshCw size={16} />
-            Refresh
-          </Button>
-        </div>
       </div>
 
       {loading ? (
@@ -420,6 +449,27 @@ export function AdminReviewsPanel() {
                     <dt>Anonymous</dt>
                     <dd>{selected.fullyAnonymous ? "Yes" : "No"}</dd>
                   </div>
+                  {selected.documentUrl || selected.documentFilename ? (
+                    <div>
+                      <dt>Document</dt>
+                      <dd>
+                        {selected.documentType
+                          ? `${selected.documentType} · `
+                          : ""}
+                        {selected.documentUrl ? (
+                          <a
+                            href={`/api/admin/documents?url=${encodeURIComponent(selected.documentUrl)}`}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            {selected.documentFilename || "Open file"}
+                          </a>
+                        ) : (
+                          selected.documentFilename || "—"
+                        )}
+                      </dd>
+                    </div>
+                  ) : null}
                 </dl>
 
                 <section className="admin-detail__block">

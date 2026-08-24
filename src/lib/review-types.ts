@@ -44,6 +44,7 @@ export type ReviewSubmitPayload = {
     documentType?: string;
     documentFilename?: string;
     documentSize?: number;
+    documentUrl?: string;
   };
 };
 

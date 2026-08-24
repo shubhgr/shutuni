@@ -26,6 +26,9 @@ type ReviewRow = {
   categories: unknown;
   verification_method: string;
   moderation_status: string;
+  document_type: string | null;
+  document_filename: string | null;
+  document_url: string | null;
   created_at: string | Date;
 };
 
@@ -55,6 +58,9 @@ function mapRow(row: ReviewRow): AdminReview {
     categories,
     verificationMethod: row.verification_method,
     moderationStatus: row.moderation_status,
+    documentType: row.document_type,
+    documentFilename: row.document_filename,
+    documentUrl: row.document_url,
     createdAt:
       row.created_at instanceof Date
         ? row.created_at.toISOString()
@@ -107,6 +113,9 @@ export async function listReviews(options?: {
         categories,
         verification_method,
         moderation_status,
+        document_type,
+        document_filename,
+        document_url,
         created_at
       FROM reviews
       WHERE
@@ -149,6 +158,9 @@ export async function listReviews(options?: {
       categories,
       verification_method,
       moderation_status,
+      document_type,
+      document_filename,
+      document_url,
       created_at
     FROM reviews
     ORDER BY created_at DESC

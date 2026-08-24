@@ -24,6 +24,12 @@ import type {
   ReviewSubmitPayload,
   ReviewVerificationMethod,
 } from "@/lib/review-types";
+import {
+  REVIEW_DOCUMENT_ACCEPT,
+  REVIEW_DOCUMENT_MAX_BYTES,
+  formatBytes,
+  validateReviewDocument,
+} from "@/lib/review-document";
 
 import "@/styles/university-detail.css";
 
@@ -162,7 +168,14 @@ export function ReviewVerifyFlow({
     return () => window.removeEventListener("message", onMessage);
   }, []);
 
-  async function submitReview(method: ReviewVerificationMethod) {
+  async function submitReview(
+    method: ReviewVerificationMethod,
+    documentMeta?: {
+      documentUrl?: string;
+      documentFilename?: string;
+      documentSize?: number;
+    }
+  ) {
     if (!displayName.trim()) {
       toast.error("Please enter your full name.");
       return;
@@ -182,9 +195,15 @@ export function ReviewVerifyFlow({
           documentType:
             method === "document" && docType ? docType : undefined,
           documentFilename:
-            method === "document" && docFile ? docFile.name : undefined,
+            method === "document"
+              ? documentMeta?.documentFilename ?? docFile?.name
+              : undefined,
           documentSize:
-            method === "document" && docFile ? docFile.size : undefined,
+            method === "document"
+              ? documentMeta?.documentSize ?? docFile?.size
+              : undefined,
+          documentUrl:
+            method === "document" ? documentMeta?.documentUrl : undefined,
         },
       };
 
@@ -385,7 +404,7 @@ export function ReviewVerifyFlow({
     return "linkedin";
   }
 
-  function handleDocumentSubmit() {
+  async function handleDocumentSubmit() {
     if (!docType) {
       toast.error("Please select a document type.");
       return;
@@ -394,7 +413,58 @@ export function ReviewVerifyFlow({
       toast.error("Please upload a document.");
       return;
     }
-    void submitReview("document");
+    const localError = validateReviewDocument(docFile);
+    if (localError) {
+      toast.error(localError);
+      return;
+    }
+
+    setBusy(true);
+    try {
+      const form = new FormData();
+      form.append("file", docFile);
+      const uploadRes = await fetch("/api/reviews/document", {
+        method: "POST",
+        credentials: "same-origin",
+        body: form,
+      });
+      const uploadData = (await uploadRes.json().catch(() => ({}))) as {
+        error?: string;
+        url?: string;
+        filename?: string;
+        size?: number;
+      };
+      if (!uploadRes.ok || !uploadData.url) {
+        throw new Error(uploadData.error || "Failed to upload document");
+      }
+
+      setBusy(false);
+      await submitReview("document", {
+        documentUrl: uploadData.url,
+        documentFilename: uploadData.filename ?? docFile.name,
+        documentSize: uploadData.size ?? docFile.size,
+      });
+    } catch (error) {
+      setBusy(false);
+      toast.error(
+        error instanceof Error ? error.message : "Failed to upload document"
+      );
+    }
+  }
+
+  function handleDocFileChange(file: File | null) {
+    if (!file) {
+      setDocFile(null);
+      return;
+    }
+    const error = validateReviewDocument(file);
+    if (error) {
+      toast.error(error);
+      setDocFile(null);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+      return;
+    }
+    setDocFile(file);
   }
 
   const nameVerified = linkedinConnected;
@@ -438,7 +508,7 @@ export function ReviewVerifyFlow({
       : "Double-check your name, then send your review.",
     method:
       "Choose College Email or a document to prove affiliation. Skip posts without verification.",
-    document: "Marksheet, ID card, or degree certificate. Always works.",
+    document: `Marksheet, ID card, or degree (JPG/PNG/WebP/PDF, max ${formatBytes(REVIEW_DOCUMENT_MAX_BYTES)}).`,
     done: fullyAnonymous
       ? "Your review was submitted anonymously. Thank you for sharing your experience."
       : "Your review was submitted. Thank you for sharing your experience.",
@@ -812,9 +882,11 @@ export function ReviewVerifyFlow({
           <input
             ref={fileInputRef}
             type="file"
-            accept=".jpg,.jpeg,.png,.pdf,image/jpeg,image/png,application/pdf"
+            accept={REVIEW_DOCUMENT_ACCEPT}
             className="sr-only"
-            onChange={(e) => setDocFile(e.target.files?.[0] ?? null)}
+            onChange={(e) =>
+              handleDocFileChange(e.target.files?.[0] ?? null)
+            }
           />
           <button
             type="button"
@@ -824,8 +896,8 @@ export function ReviewVerifyFlow({
             <FileUp aria-hidden />
             <span>
               {docFile
-                ? docFile.name
-                : "Drag & drop or click to upload"}
+                ? `${docFile.name} (${formatBytes(docFile.size)})`
+                : `Click to upload (max ${formatBytes(REVIEW_DOCUMENT_MAX_BYTES)})`}
             </span>
           </button>
 
@@ -835,10 +907,10 @@ export function ReviewVerifyFlow({
             </Button>
             <Button
               type="button"
-              onClick={handleDocumentSubmit}
+              onClick={() => void handleDocumentSubmit()}
               disabled={busy}
             >
-              {busy ? "Saving…" : "Submit for review"}
+              {busy ? "Uploading…" : "Submit for review"}
             </Button>
           </div>
         </div>
