@@ -798,8 +798,8 @@
     180deg,
     var(--su-orange-deep) 0%,
     var(--su-orange-deep) 50%,
-    #242628 50%,
-    #242628 100%
+    #222527 50%,
+    #222527 100%
   );
   box-sizing: border-box;
 }
@@ -886,6 +886,7 @@
   align-items: flex-start;
   justify-content: center;
   gap: 1.4375rem; /* 23px */
+  background-color: #222527;
 }
 
 .suhome__truths-copy-bottom h2 {
