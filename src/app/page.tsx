@@ -116,7 +116,7 @@ export default function HomePage() {
 
       <footer className="verdict-footer">
         <div className="verdict-footer__inner">
-          <div className="verdict-footer__top"><h2>Unbiased reviews<br /><span>Honest decisions</span></h2><div className="verdict-footer__divider" aria-hidden="true" /><div><nav aria-label="Footer"><a href="#how">How it works</a><a href="#why">Purpose</a><Link href={reviewHref}>Submit a Review</Link><Link href="/privacy">Privacy</Link><Link href="/terms">Terms &amp; Conditions</Link></nav><p>© 2026 VerdictEd. A Platform for honest college reviews</p></div></div>
+          <div className="verdict-footer__top"><h2>Unbiased reviews<br /><span>Honest decisions</span></h2><div className="verdict-footer__divider" aria-hidden="true" /><div><nav aria-label="Footer"><a href="#how">How it works</a><a href="#why">Purpose</a><Link href={reviewHref}>Submit a Review</Link><a href="mailto:whatstheverdict.ed@gmail.com">Contact</a><Link href="/privacy">Privacy</Link><Link href="/terms">Terms &amp; Conditions</Link><Link href="/grievance">Grievance</Link></nav><p>© 2026 VerdictEd. A Platform for honest college reviews</p></div></div>
           <Image className="verdict-footer__wordmark" src="/home/footer-wordmark.svg" alt="" width={1200} height={290} aria-hidden="true" />
         </div>
       </footer>

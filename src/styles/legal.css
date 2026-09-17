@@ -1,0 +1,120 @@
+.legal-page {
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse 80% 50% at 10% -10%, rgba(253, 93, 5, 0.12), transparent),
+    radial-gradient(ellipse 60% 40% at 100% 0%, rgba(0, 0, 0, 0.04), transparent),
+    #faf9f7;
+  color: #111;
+}
+
+.legal-page__inner {
+  width: min(720px, calc(100% - 2rem));
+  margin: 0 auto;
+  padding: 2rem 0 4rem;
+}
+
+.legal-page__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-bottom: 1.75rem;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: #444;
+  text-decoration: none;
+}
+
+.legal-page__back:hover {
+  color: #fd5d05;
+}
+
+.legal-page__header {
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px solid #111;
+}
+
+.legal-page__eyebrow {
+  margin: 0 0 0.5rem;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #fd5d05;
+}
+
+.legal-page__title {
+  margin: 0 0 0.75rem;
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+  letter-spacing: -0.02em;
+}
+
+.legal-page__lede {
+  margin: 0 0 0.75rem;
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-relaxed);
+  color: #333;
+}
+
+.legal-page__meta {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: #666;
+}
+
+.legal-page__body {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.legal-page__section h2 {
+  margin: 0 0 0.75rem;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-snug);
+}
+
+.legal-page__section h3 {
+  margin: 1rem 0 0.5rem;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-snug);
+}
+
+.legal-page__section p,
+.legal-page__section li {
+  margin: 0 0 0.75rem;
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-relaxed);
+  color: #222;
+}
+
+.legal-page__section p:last-child,
+.legal-page__section li:last-child {
+  margin-bottom: 0;
+}
+
+.legal-page__section ul {
+  margin: 0 0 0.75rem;
+  padding-left: 1.25rem;
+}
+
+.legal-page__section a {
+  color: #fd5d05;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.legal-page__section a:hover {
+  color: #c44800;
+}
+
+.legal-page__disclaimer {
+  margin-top: 0.5rem;
+  font-size: var(--font-size-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+}

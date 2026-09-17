@@ -24,8 +24,10 @@ export function LandingFooter() {
             <nav className="landing__footer-nav" aria-label="Footer navigation">
               <Link href="#how">How it works</Link>
               <Link href="#voice">Purpose</Link>
-              <a href="mailto:hello@campusjanta.com">Contact</a>
+              <a href="mailto:whatstheverdict.ed@gmail.com">Contact</a>
               <Link href="/privacy">Privacy</Link>
+              <Link href="/terms">Terms</Link>
+              <Link href="/grievance">Grievance</Link>
             </nav>
             <p className="landing__footer-legal">
               © 2026 VerdictED. By the students. For the students.

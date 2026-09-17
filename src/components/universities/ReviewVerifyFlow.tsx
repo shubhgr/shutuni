@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { FileUp } from "lucide-react";
 import { toast } from "sonner";
 
@@ -84,6 +85,7 @@ export function ReviewVerifyFlow({
   const [docFile, setDocFile] = useState<File | null>(null);
   const [busy, setBusy] = useState(false);
   const [submittedUnverified, setSubmittedUnverified] = useState(false);
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const linkedinIntentRef = useRef(false);
 
@@ -178,6 +180,10 @@ export function ReviewVerifyFlow({
   ) {
     if (!displayName.trim()) {
       toast.error("Please enter your full name.");
+      return;
+    }
+    if (!acceptedTerms) {
+      toast.error("Please agree to the Terms and Grievance Redressal Policy.");
       return;
     }
 
@@ -392,10 +398,38 @@ export function ReviewVerifyFlow({
       return;
     }
     if (affiliationChoice === "skipped") {
+      if (!acceptedTerms) {
+        toast.error(
+          "Please agree to the Terms and Grievance Redressal Policy."
+        );
+        return;
+      }
       void submitReview("skipped");
       return;
     }
     setStep("method");
+  }
+
+  function TermsAgreement() {
+    return (
+      <label className="review-verify__terms">
+        <input
+          type="checkbox"
+          checked={acceptedTerms}
+          onChange={(e) => setAcceptedTerms(e.target.checked)}
+        />
+        <span>
+          I agree to the{" "}
+          <Link href="/terms" target="_blank" rel="noopener noreferrer">
+            Terms
+          </Link>{" "}
+          and{" "}
+          <Link href="/grievance" target="_blank" rel="noopener noreferrer">
+            Grievance Redressal Policy
+          </Link>
+        </span>
+      </label>
+    );
   }
 
   function resolveSendMethod(): ReviewVerificationMethod {
@@ -405,6 +439,10 @@ export function ReviewVerifyFlow({
   }
 
   async function handleDocumentSubmit() {
+    if (!acceptedTerms) {
+      toast.error("Please agree to the Terms and Grievance Redressal Policy.");
+      return;
+    }
     if (!docType) {
       toast.error("Please select a document type.");
       return;
@@ -736,6 +774,7 @@ export function ReviewVerifyFlow({
               ) : null}
             </div>
           </div>
+          {affiliationChoice === "skipped" ? <TermsAgreement /> : null}
           <div className="review-verify__actions">
             <Button
               type="button"
@@ -746,7 +785,11 @@ export function ReviewVerifyFlow({
             >
               Back
             </Button>
-            <Button type="button" onClick={handleIdentityContinue} disabled={busy}>
+            <Button
+              type="button"
+              onClick={handleIdentityContinue}
+              disabled={busy || (affiliationChoice === "skipped" && !acceptedTerms)}
+            >
               {busy
                 ? "Saving…"
                 : affiliationChoice === "skipped"
@@ -793,6 +836,7 @@ export function ReviewVerifyFlow({
               </p>
             ) : null}
           </div>
+          <TermsAgreement />
           <div className="review-verify__actions">
             <Button
               type="button"
@@ -805,7 +849,7 @@ export function ReviewVerifyFlow({
             <Button
               type="button"
               onClick={() => void submitReview(resolveSendMethod())}
-              disabled={busy}
+              disabled={busy || !acceptedTerms}
             >
               {busy ? "Sending…" : "Send"}
             </Button>
@@ -901,6 +945,7 @@ export function ReviewVerifyFlow({
             </span>
           </button>
 
+          <TermsAgreement />
           <div className="review-verify__actions">
             <Button type="button" variant="outline" onClick={() => setStep("identity")}>
               Back
@@ -908,7 +953,7 @@ export function ReviewVerifyFlow({
             <Button
               type="button"
               onClick={() => void handleDocumentSubmit()}
-              disabled={busy}
+              disabled={busy || !acceptedTerms}
             >
               {busy ? "Uploading…" : "Submit for review"}
             </Button>
